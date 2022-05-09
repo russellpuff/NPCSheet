@@ -98,7 +98,7 @@ namespace NPCSheet {
 
 	private: System::Windows::Forms::Button^ efDeleteWeapButton;
 
-	private: System::Windows::Forms::Button^ efViewWeapButton;
+
 
 	private: System::Windows::Forms::Label^ label2;
 	private: System::Windows::Forms::Button^ efWeaponCreatorButton;
@@ -322,7 +322,6 @@ namespace NPCSheet {
 			this->efTabPage3 = (gcnew System::Windows::Forms::TabPage());
 			this->efWeaponCreatorButton = (gcnew System::Windows::Forms::Button());
 			this->efDeleteWeapButton = (gcnew System::Windows::Forms::Button());
-			this->efViewWeapButton = (gcnew System::Windows::Forms::Button());
 			this->label2 = (gcnew System::Windows::Forms::Label());
 			this->efWeaponsListBox = (gcnew System::Windows::Forms::ListBox());
 			this->efVertLineLabel = (gcnew System::Windows::Forms::Label());
@@ -1440,7 +1439,6 @@ namespace NPCSheet {
 			// 
 			this->efTabPage3->Controls->Add(this->efWeaponCreatorButton);
 			this->efTabPage3->Controls->Add(this->efDeleteWeapButton);
-			this->efTabPage3->Controls->Add(this->efViewWeapButton);
 			this->efTabPage3->Controls->Add(this->label2);
 			this->efTabPage3->Controls->Add(this->efWeaponsListBox);
 			this->efTabPage3->Controls->Add(this->efVertLineLabel);
@@ -1465,11 +1463,11 @@ namespace NPCSheet {
 			// efWeaponCreatorButton
 			// 
 			this->efWeaponCreatorButton->Anchor = static_cast<System::Windows::Forms::AnchorStyles>((System::Windows::Forms::AnchorStyles::Bottom | System::Windows::Forms::AnchorStyles::Left));
-			this->efWeaponCreatorButton->Location = System::Drawing::Point(359, 35);
+			this->efWeaponCreatorButton->Location = System::Drawing::Point(234, 228);
 			this->efWeaponCreatorButton->Name = L"efWeaponCreatorButton";
-			this->efWeaponCreatorButton->Size = System::Drawing::Size(119, 34);
+			this->efWeaponCreatorButton->Size = System::Drawing::Size(119, 29);
 			this->efWeaponCreatorButton->TabIndex = 36;
-			this->efWeaponCreatorButton->Text = L"Launch Weapon Creator";
+			this->efWeaponCreatorButton->Text = L"Create Weapon";
 			this->efWeaponCreatorButton->UseVisualStyleBackColor = true;
 			this->efWeaponCreatorButton->Click += gcnew System::EventHandler(this, &EditorForm::efWeaponCreatorButton_Click);
 			// 
@@ -1483,17 +1481,6 @@ namespace NPCSheet {
 			this->efDeleteWeapButton->Text = L"Delete Weapon";
 			this->efDeleteWeapButton->UseVisualStyleBackColor = true;
 			this->efDeleteWeapButton->Click += gcnew System::EventHandler(this, &EditorForm::efDeleteWeapButton_Click);
-			// 
-			// efViewWeapButton
-			// 
-			this->efViewWeapButton->Anchor = static_cast<System::Windows::Forms::AnchorStyles>((System::Windows::Forms::AnchorStyles::Bottom | System::Windows::Forms::AnchorStyles::Left));
-			this->efViewWeapButton->Location = System::Drawing::Point(231, 228);
-			this->efViewWeapButton->Name = L"efViewWeapButton";
-			this->efViewWeapButton->Size = System::Drawing::Size(122, 29);
-			this->efViewWeapButton->TabIndex = 34;
-			this->efViewWeapButton->Text = L"View Weapon";
-			this->efViewWeapButton->UseVisualStyleBackColor = true;
-			this->efViewWeapButton->Click += gcnew System::EventHandler(this, &EditorForm::efViewWeapButton_Click);
 			// 
 			// label2
 			// 
@@ -1704,6 +1691,7 @@ namespace NPCSheet {
 			this->efSpellsNumUpDown->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Regular,
 				System::Drawing::GraphicsUnit::Point, static_cast<System::Byte>(0)));
 			this->efSpellsNumUpDown->Location = System::Drawing::Point(228, 3);
+			this->efSpellsNumUpDown->Maximum = System::Decimal(gcnew cli::array< System::Int32 >(4) { 9, 0, 0, 0 });
 			this->efSpellsNumUpDown->Name = L"efSpellsNumUpDown";
 			this->efSpellsNumUpDown->Size = System::Drawing::Size(52, 29);
 			this->efSpellsNumUpDown->TabIndex = 27;
@@ -1819,11 +1807,12 @@ namespace NPCSheet {
 	private: System::Void efSkillsDeleteButton_Click(System::Object^ sender, System::EventArgs^ e);
 	private: System::Void efActionAddButton_Click(System::Object^ sender, System::EventArgs^ e);
 	private: System::Void efWeaponCreatorButton_Click(System::Object^ sender, System::EventArgs^ e);
-	private: System::Void efViewWeapButton_Click(System::Object^ sender, System::EventArgs^ e);
 	private: System::Void efDeleteWeapButton_Click(System::Object^ sender, System::EventArgs^ e);
 	private: System::Void efViewButton_Click(System::Object^ sender, System::EventArgs^ e);
 	private: System::Void efActionDeleteButton_Click(System::Object^ sender, System::EventArgs^ e);
 	private: System::Void efSpellsAddButton_Click(System::Object^ sender, System::EventArgs^ e);
 	private: System::Void efSpellsRemoveButton_Click(System::Object^ sender, System::EventArgs^ e);
+	private: System::Void UpdateWeaponsListBox(int idx);
+	private: System::Void DisplaySpellsInListBox();
 };
 }

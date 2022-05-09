@@ -1,4 +1,5 @@
 #pragma once
+#include "NPC.h";
 
 namespace NPCSheet {
 
@@ -8,6 +9,7 @@ namespace NPCSheet {
 	using namespace System::Windows::Forms;
 	using namespace System::Data;
 	using namespace System::Drawing;
+	using namespace NSNPC;
 
 	/// <summary>
 	/// Summary for WeaponForm
@@ -15,14 +17,82 @@ namespace NPCSheet {
 	public ref class WeaponForm : public System::Windows::Forms::Form
 	{
 	public:
-		WeaponForm(void)
+		// Default constructor for new weapon.
+		WeaponForm(array<String^>^ as)
 		{
 			InitializeComponent();
-			//
-			//TODO: Add the constructor code here
-			//
+			wfUseCheckBox->Checked = false;
+			for (int i = 0; i <= 5; ++i) {
+				if (!String::IsNullOrEmpty(as[i])) {
+					wfAttackComboBox->Items->Add(as[i]);
+					wfDamage1ComboBox->Items->Add(as[i]);
+					wfDamage2ComboBox->Items->Add(as[i]);
+				}
+			}
+			mods = gcnew array<int>(6);
+			for (int j = 6; j <= 11; ++j) {
+				if (as[j][0] == '+') { mods[j - 6] = int::Parse(as[j]->Substring(1, (as[j]->Length - 1))); }
+				else { mods[j - 6] = int::Parse(as[j]); }
+			}
+			wfAttackComboBox->SelectedIndex = 0;
+			wfDamage1ComboBox->SelectedIndex = 0;
+			wfDamage2ComboBox->SelectedIndex = 0;
 		}
 
+		// Alternate constructor for editing existing weapon. This isn't used in this version!
+		WeaponForm(array<String^>^ as, Weapon^ yp) {
+			InitializeComponent();
+			wfUseCheckBox->Checked = false;
+			for (int i = 0; i <= 5; ++i) {
+				if (!String::IsNullOrEmpty(as[i])) {
+					wfAttackComboBox->Items->Add(as[i]);
+					wfDamage1ComboBox->Items->Add(as[i]);
+					wfDamage2ComboBox->Items->Add(as[i]);
+				}
+			}
+			mods = gcnew array<int>(6);
+			for (int j = 6; j <= 11; ++j) {
+				if (as[j][0] == '+') { mods[j - 6] = int::Parse(as[j]->Substring(1, (as[j]->Length - 1))); }
+				else { mods[j - 6] = int::Parse(as[j]); }
+			}
+			wfAttackComboBox->SelectedIndex = 0;
+			wfDamage1ComboBox->SelectedIndex = 0;
+			wfDamage2ComboBox->SelectedIndex = 0;
+
+			wfNameTextBox->Text = yp->wpName;
+			wfAttackNumUpDown->Value = yp->atkBonus;
+			wfDice1NumUpDown->Value = Int32::Parse(yp->dmgA->Split('d')[0]);
+			String^ back = yp->dmgA->Split('d')[1];
+			String^ front;
+			if (back->Contains("+")) { 
+				front = "d" + back->Split('+')[0]; //grab d part
+				wfDmg1NumUpDown->Value = Int32::Parse(back->Split('+')[0]);
+			} 
+			else {
+				front = "d" + back->Split('-')[0]; 
+				wfDmg1NumUpDown->Value = (Int32::Parse(back->Split('-')[0])) * -1;
+			}
+			wfDmgDice1ComboBox->SelectedIndex = wfDmgDice1ComboBox->Items->IndexOf(front);
+
+			if (!String::IsNullOrEmpty(yp->dmgB)) {
+				back = yp->dmgB->Split('d')[1];
+				front;
+				if (back->Contains("+")) {
+					front = "d" + back->Split('+')[0]; //grab d part
+					wfDmg2NumUpDown->Value = Int32::Parse(back->Split('+')[0]);
+				}
+				else {
+					front = "d" + back->Split('-')[0];
+					wfDmg2NumUpDown->Value = (Int32::Parse(back->Split('-')[0])) * -1;
+				}
+				wfDmgDice2ComboBox->SelectedIndex = wfDmgDice2ComboBox->Items->IndexOf(front);
+			}
+		}
+
+	private: array<int>^ mods;
+	private: Weapon^ wp;
+	public: Weapon^ retWeapon();
+	private: bool wfValidateSave();
 	protected:
 		/// <summary>
 		/// Clean up any resources being used.
@@ -51,8 +121,9 @@ namespace NPCSheet {
 
 
 	private: System::Windows::Forms::Label^ wfDamage1Label;
+	private: System::Windows::Forms::NumericUpDown^ wfDice1NumUpDown;
 
-	private: System::Windows::Forms::NumericUpDown^ numericUpDown2;
+
 	private: System::Windows::Forms::ComboBox^ wfDmgDice1ComboBox;
 	private: System::Windows::Forms::Label^ wfPlusLabel2;
 
@@ -82,8 +153,9 @@ namespace NPCSheet {
 
 
 	private: System::Windows::Forms::ComboBox^ wfDmgDice2ComboBox;
+	private: System::Windows::Forms::NumericUpDown^ wfDice2NumUpDown;
 
-	private: System::Windows::Forms::NumericUpDown^ numericUpDown5;
+
 	private: System::Windows::Forms::Label^ wfDamage2Label;
 	private: System::Windows::Forms::Label^ wfUseLabel;
 	private: System::Windows::Forms::CheckBox^ wfUseCheckBox;
@@ -118,7 +190,7 @@ namespace NPCSheet {
 			this->wfRangeLabel = (gcnew System::Windows::Forms::Label());
 			this->wfRangeTextBox = (gcnew System::Windows::Forms::TextBox());
 			this->wfDamage1Label = (gcnew System::Windows::Forms::Label());
-			this->numericUpDown2 = (gcnew System::Windows::Forms::NumericUpDown());
+			this->wfDice1NumUpDown = (gcnew System::Windows::Forms::NumericUpDown());
 			this->wfDmgDice1ComboBox = (gcnew System::Windows::Forms::ComboBox());
 			this->wfPlusLabel2 = (gcnew System::Windows::Forms::Label());
 			this->wfDamage1ComboBox = (gcnew System::Windows::Forms::ComboBox());
@@ -135,7 +207,7 @@ namespace NPCSheet {
 			this->wfDamage2ComboBox = (gcnew System::Windows::Forms::ComboBox());
 			this->wfPlusLabel4 = (gcnew System::Windows::Forms::Label());
 			this->wfDmgDice2ComboBox = (gcnew System::Windows::Forms::ComboBox());
-			this->numericUpDown5 = (gcnew System::Windows::Forms::NumericUpDown());
+			this->wfDice2NumUpDown = (gcnew System::Windows::Forms::NumericUpDown());
 			this->wfDamage2Label = (gcnew System::Windows::Forms::Label());
 			this->wfUseLabel = (gcnew System::Windows::Forms::Label());
 			this->wfUseCheckBox = (gcnew System::Windows::Forms::CheckBox());
@@ -143,10 +215,10 @@ namespace NPCSheet {
 			this->wfCancelButton = (gcnew System::Windows::Forms::Button());
 			this->label15 = (gcnew System::Windows::Forms::Label());
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->wfAttackNumUpDown))->BeginInit();
-			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->numericUpDown2))->BeginInit();
+			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->wfDice1NumUpDown))->BeginInit();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->wfDmg1NumUpDown))->BeginInit();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->wfDmg2NumUpDown))->BeginInit();
-			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->numericUpDown5))->BeginInit();
+			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->wfDice2NumUpDown))->BeginInit();
 			this->SuspendLayout();
 			// 
 			// wfNameLabel
@@ -166,7 +238,7 @@ namespace NPCSheet {
 				static_cast<System::Byte>(0)));
 			this->wfNameTextBox->Location = System::Drawing::Point(73, 6);
 			this->wfNameTextBox->Name = L"wfNameTextBox";
-			this->wfNameTextBox->Size = System::Drawing::Size(277, 26);
+			this->wfNameTextBox->Size = System::Drawing::Size(264, 26);
 			this->wfNameTextBox->TabIndex = 1;
 			// 
 			// wtfAttackLabel
@@ -186,9 +258,10 @@ namespace NPCSheet {
 			this->wfAttackComboBox->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
 			this->wfAttackComboBox->FormattingEnabled = true;
+			this->wfAttackComboBox->Items->AddRange(gcnew cli::array< System::Object^  >(1) { L"(None)" });
 			this->wfAttackComboBox->Location = System::Drawing::Point(127, 44);
 			this->wfAttackComboBox->Name = L"wfAttackComboBox";
-			this->wfAttackComboBox->Size = System::Drawing::Size(120, 28);
+			this->wfAttackComboBox->Size = System::Drawing::Size(110, 28);
 			this->wfAttackComboBox->TabIndex = 3;
 			// 
 			// wfPlusLabel1
@@ -196,7 +269,7 @@ namespace NPCSheet {
 			this->wfPlusLabel1->AutoSize = true;
 			this->wfPlusLabel1->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
-			this->wfPlusLabel1->Location = System::Drawing::Point(253, 47);
+			this->wfPlusLabel1->Location = System::Drawing::Point(243, 47);
 			this->wfPlusLabel1->Name = L"wfPlusLabel1";
 			this->wfPlusLabel1->Size = System::Drawing::Size(18, 20);
 			this->wfPlusLabel1->TabIndex = 4;
@@ -206,7 +279,7 @@ namespace NPCSheet {
 			// 
 			this->wfAttackNumUpDown->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
-			this->wfAttackNumUpDown->Location = System::Drawing::Point(277, 45);
+			this->wfAttackNumUpDown->Location = System::Drawing::Point(264, 46);
 			this->wfAttackNumUpDown->Minimum = System::Decimal(gcnew cli::array< System::Int32 >(4) { 100, 0, 0, System::Int32::MinValue });
 			this->wfAttackNumUpDown->Name = L"wfAttackNumUpDown";
 			this->wfAttackNumUpDown->Size = System::Drawing::Size(73, 26);
@@ -229,7 +302,7 @@ namespace NPCSheet {
 				static_cast<System::Byte>(0)));
 			this->wfRangeTextBox->Location = System::Drawing::Point(73, 86);
 			this->wfRangeTextBox->Name = L"wfRangeTextBox";
-			this->wfRangeTextBox->Size = System::Drawing::Size(277, 26);
+			this->wfRangeTextBox->Size = System::Drawing::Size(264, 26);
 			this->wfRangeTextBox->TabIndex = 7;
 			// 
 			// wfDamage1Label
@@ -243,16 +316,16 @@ namespace NPCSheet {
 			this->wfDamage1Label->TabIndex = 8;
 			this->wfDamage1Label->Text = L"Damage:";
 			// 
-			// numericUpDown2
+			// wfDice1NumUpDown
 			// 
-			this->numericUpDown2->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+			this->wfDice1NumUpDown->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
-			this->numericUpDown2->Location = System::Drawing::Point(94, 133);
-			this->numericUpDown2->Minimum = System::Decimal(gcnew cli::array< System::Int32 >(4) { 1, 0, 0, 0 });
-			this->numericUpDown2->Name = L"numericUpDown2";
-			this->numericUpDown2->Size = System::Drawing::Size(61, 26);
-			this->numericUpDown2->TabIndex = 9;
-			this->numericUpDown2->Value = System::Decimal(gcnew cli::array< System::Int32 >(4) { 1, 0, 0, 0 });
+			this->wfDice1NumUpDown->Location = System::Drawing::Point(94, 133);
+			this->wfDice1NumUpDown->Minimum = System::Decimal(gcnew cli::array< System::Int32 >(4) { 1, 0, 0, 0 });
+			this->wfDice1NumUpDown->Name = L"wfDice1NumUpDown";
+			this->wfDice1NumUpDown->Size = System::Drawing::Size(61, 26);
+			this->wfDice1NumUpDown->TabIndex = 9;
+			this->wfDice1NumUpDown->Value = System::Decimal(gcnew cli::array< System::Int32 >(4) { 1, 0, 0, 0 });
 			// 
 			// wfDmgDice1ComboBox
 			// 
@@ -260,9 +333,9 @@ namespace NPCSheet {
 			this->wfDmgDice1ComboBox->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
 			this->wfDmgDice1ComboBox->FormattingEnabled = true;
-			this->wfDmgDice1ComboBox->Items->AddRange(gcnew cli::array< System::Object^  >(9) {
+			this->wfDmgDice1ComboBox->Items->AddRange(gcnew cli::array< System::Object^  >(7) {
 				L"d3", L"d4", L"d6", L"d8", L"d10", L"d12",
-					L"d20", L"d50", L"d100"
+					L"d20"
 			});
 			this->wfDmgDice1ComboBox->Location = System::Drawing::Point(161, 132);
 			this->wfDmgDice1ComboBox->Name = L"wfDmgDice1ComboBox";
@@ -286,9 +359,10 @@ namespace NPCSheet {
 			this->wfDamage1ComboBox->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
 			this->wfDamage1ComboBox->FormattingEnabled = true;
+			this->wfDamage1ComboBox->Items->AddRange(gcnew cli::array< System::Object^  >(1) { L"(None)" });
 			this->wfDamage1ComboBox->Location = System::Drawing::Point(94, 175);
 			this->wfDamage1ComboBox->Name = L"wfDamage1ComboBox";
-			this->wfDamage1ComboBox->Size = System::Drawing::Size(120, 28);
+			this->wfDamage1ComboBox->Size = System::Drawing::Size(100, 28);
 			this->wfDamage1ComboBox->TabIndex = 12;
 			// 
 			// wfPlusLabel3
@@ -296,7 +370,7 @@ namespace NPCSheet {
 			this->wfPlusLabel3->AutoSize = true;
 			this->wfPlusLabel3->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
-			this->wfPlusLabel3->Location = System::Drawing::Point(220, 181);
+			this->wfPlusLabel3->Location = System::Drawing::Point(200, 181);
 			this->wfPlusLabel3->Name = L"wfPlusLabel3";
 			this->wfPlusLabel3->Size = System::Drawing::Size(18, 20);
 			this->wfPlusLabel3->TabIndex = 13;
@@ -306,7 +380,7 @@ namespace NPCSheet {
 			// 
 			this->wfDmg1NumUpDown->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
-			this->wfDmg1NumUpDown->Location = System::Drawing::Point(244, 177);
+			this->wfDmg1NumUpDown->Location = System::Drawing::Point(224, 177);
 			this->wfDmg1NumUpDown->Minimum = System::Decimal(gcnew cli::array< System::Int32 >(4) { 100, 0, 0, System::Int32::MinValue });
 			this->wfDmg1NumUpDown->Name = L"wfDmg1NumUpDown";
 			this->wfDmg1NumUpDown->Size = System::Drawing::Size(61, 26);
@@ -329,7 +403,7 @@ namespace NPCSheet {
 				static_cast<System::Byte>(0)));
 			this->wfType1TextBox->Location = System::Drawing::Point(73, 222);
 			this->wfType1TextBox->Name = L"wfType1TextBox";
-			this->wfType1TextBox->Size = System::Drawing::Size(277, 26);
+			this->wfType1TextBox->Size = System::Drawing::Size(264, 26);
 			this->wfType1TextBox->TabIndex = 16;
 			// 
 			// label8
@@ -354,7 +428,7 @@ namespace NPCSheet {
 				static_cast<System::Byte>(0)));
 			this->wfType2TextBox->Location = System::Drawing::Point(73, 362);
 			this->wfType2TextBox->Name = L"wfType2TextBox";
-			this->wfType2TextBox->Size = System::Drawing::Size(277, 26);
+			this->wfType2TextBox->Size = System::Drawing::Size(264, 26);
 			this->wfType2TextBox->TabIndex = 44;
 			// 
 			// wfType2Label
@@ -372,7 +446,7 @@ namespace NPCSheet {
 			// 
 			this->wfDmg2NumUpDown->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
-			this->wfDmg2NumUpDown->Location = System::Drawing::Point(244, 317);
+			this->wfDmg2NumUpDown->Location = System::Drawing::Point(224, 317);
 			this->wfDmg2NumUpDown->Minimum = System::Decimal(gcnew cli::array< System::Int32 >(4) { 100, 0, 0, System::Int32::MinValue });
 			this->wfDmg2NumUpDown->Name = L"wfDmg2NumUpDown";
 			this->wfDmg2NumUpDown->Size = System::Drawing::Size(61, 26);
@@ -383,7 +457,7 @@ namespace NPCSheet {
 			this->wfPlusLabel5->AutoSize = true;
 			this->wfPlusLabel5->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
-			this->wfPlusLabel5->Location = System::Drawing::Point(220, 321);
+			this->wfPlusLabel5->Location = System::Drawing::Point(200, 321);
 			this->wfPlusLabel5->Name = L"wfPlusLabel5";
 			this->wfPlusLabel5->Size = System::Drawing::Size(18, 20);
 			this->wfPlusLabel5->TabIndex = 41;
@@ -395,9 +469,10 @@ namespace NPCSheet {
 			this->wfDamage2ComboBox->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
 			this->wfDamage2ComboBox->FormattingEnabled = true;
+			this->wfDamage2ComboBox->Items->AddRange(gcnew cli::array< System::Object^  >(1) { L"(None)" });
 			this->wfDamage2ComboBox->Location = System::Drawing::Point(94, 315);
 			this->wfDamage2ComboBox->Name = L"wfDamage2ComboBox";
-			this->wfDamage2ComboBox->Size = System::Drawing::Size(120, 28);
+			this->wfDamage2ComboBox->Size = System::Drawing::Size(100, 28);
 			this->wfDamage2ComboBox->TabIndex = 40;
 			// 
 			// wfPlusLabel4
@@ -417,25 +492,25 @@ namespace NPCSheet {
 			this->wfDmgDice2ComboBox->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
 			this->wfDmgDice2ComboBox->FormattingEnabled = true;
-			this->wfDmgDice2ComboBox->Items->AddRange(gcnew cli::array< System::Object^  >(9) {
+			this->wfDmgDice2ComboBox->Items->AddRange(gcnew cli::array< System::Object^  >(7) {
 				L"d3", L"d4", L"d6", L"d8", L"d10", L"d12",
-					L"d20", L"d50", L"d100"
+					L"d20"
 			});
 			this->wfDmgDice2ComboBox->Location = System::Drawing::Point(161, 272);
 			this->wfDmgDice2ComboBox->Name = L"wfDmgDice2ComboBox";
 			this->wfDmgDice2ComboBox->Size = System::Drawing::Size(53, 28);
 			this->wfDmgDice2ComboBox->TabIndex = 38;
 			// 
-			// numericUpDown5
+			// wfDice2NumUpDown
 			// 
-			this->numericUpDown5->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+			this->wfDice2NumUpDown->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
-			this->numericUpDown5->Location = System::Drawing::Point(94, 273);
-			this->numericUpDown5->Minimum = System::Decimal(gcnew cli::array< System::Int32 >(4) { 1, 0, 0, 0 });
-			this->numericUpDown5->Name = L"numericUpDown5";
-			this->numericUpDown5->Size = System::Drawing::Size(61, 26);
-			this->numericUpDown5->TabIndex = 37;
-			this->numericUpDown5->Value = System::Decimal(gcnew cli::array< System::Int32 >(4) { 1, 0, 0, 0 });
+			this->wfDice2NumUpDown->Location = System::Drawing::Point(94, 273);
+			this->wfDice2NumUpDown->Minimum = System::Decimal(gcnew cli::array< System::Int32 >(4) { 1, 0, 0, 0 });
+			this->wfDice2NumUpDown->Name = L"wfDice2NumUpDown";
+			this->wfDice2NumUpDown->Size = System::Drawing::Size(61, 26);
+			this->wfDice2NumUpDown->TabIndex = 37;
+			this->wfDice2NumUpDown->Value = System::Decimal(gcnew cli::array< System::Int32 >(4) { 1, 0, 0, 0 });
 			// 
 			// wfDamage2Label
 			// 
@@ -468,6 +543,7 @@ namespace NPCSheet {
 			this->wfUseCheckBox->Size = System::Drawing::Size(15, 14);
 			this->wfUseCheckBox->TabIndex = 46;
 			this->wfUseCheckBox->UseVisualStyleBackColor = true;
+			this->wfUseCheckBox->CheckedChanged += gcnew System::EventHandler(this, &WeaponForm::wfUseCheckBox_CheckedChanged);
 			// 
 			// wfSaveButton
 			// 
@@ -477,6 +553,7 @@ namespace NPCSheet {
 			this->wfSaveButton->TabIndex = 47;
 			this->wfSaveButton->Text = L"Save";
 			this->wfSaveButton->UseVisualStyleBackColor = true;
+			this->wfSaveButton->Click += gcnew System::EventHandler(this, &WeaponForm::wfSaveButton_Click);
 			// 
 			// wfCancelButton
 			// 
@@ -486,6 +563,7 @@ namespace NPCSheet {
 			this->wfCancelButton->TabIndex = 48;
 			this->wfCancelButton->Text = L"Cancel";
 			this->wfCancelButton->UseVisualStyleBackColor = true;
+			this->wfCancelButton->Click += gcnew System::EventHandler(this, &WeaponForm::wfCancelButton_Click);
 			// 
 			// label15
 			// 
@@ -499,7 +577,7 @@ namespace NPCSheet {
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
-			this->ClientSize = System::Drawing::Size(366, 448);
+			this->ClientSize = System::Drawing::Size(349, 448);
 			this->Controls->Add(this->label15);
 			this->Controls->Add(this->wfCancelButton);
 			this->Controls->Add(this->wfSaveButton);
@@ -512,7 +590,7 @@ namespace NPCSheet {
 			this->Controls->Add(this->wfDamage2ComboBox);
 			this->Controls->Add(this->wfPlusLabel4);
 			this->Controls->Add(this->wfDmgDice2ComboBox);
-			this->Controls->Add(this->numericUpDown5);
+			this->Controls->Add(this->wfDice2NumUpDown);
 			this->Controls->Add(this->wfDamage2Label);
 			this->Controls->Add(this->label9);
 			this->Controls->Add(this->label8);
@@ -523,7 +601,7 @@ namespace NPCSheet {
 			this->Controls->Add(this->wfDamage1ComboBox);
 			this->Controls->Add(this->wfPlusLabel2);
 			this->Controls->Add(this->wfDmgDice1ComboBox);
-			this->Controls->Add(this->numericUpDown2);
+			this->Controls->Add(this->wfDice1NumUpDown);
 			this->Controls->Add(this->wfDamage1Label);
 			this->Controls->Add(this->wfRangeTextBox);
 			this->Controls->Add(this->wfRangeLabel);
@@ -540,14 +618,17 @@ namespace NPCSheet {
 			this->StartPosition = System::Windows::Forms::FormStartPosition::CenterScreen;
 			this->Text = L"Weapon Creator";
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->wfAttackNumUpDown))->EndInit();
-			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->numericUpDown2))->EndInit();
+			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->wfDice1NumUpDown))->EndInit();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->wfDmg1NumUpDown))->EndInit();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->wfDmg2NumUpDown))->EndInit();
-			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->numericUpDown5))->EndInit();
+			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->wfDice2NumUpDown))->EndInit();
 			this->ResumeLayout(false);
 			this->PerformLayout();
 
 		}
 #pragma endregion
-	};
+	private: System::Void wfSaveButton_Click(System::Object^ sender, System::EventArgs^ e);
+	private: System::Void wfCancelButton_Click(System::Object^ sender, System::EventArgs^ e);
+	private: System::Void wfUseCheckBox_CheckedChanged(System::Object^ sender, System::EventArgs^ e);
+};
 }

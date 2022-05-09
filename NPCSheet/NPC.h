@@ -3,7 +3,6 @@
 namespace NSNPC {
 	using namespace System;
 	using namespace System::Collections::Generic;
-	using namespace cliext;
 
 	public ref struct Weapon {
 		String^ wpName;
@@ -64,8 +63,8 @@ namespace NSNPC {
 		array<String^>^ statDesc;
 		array<int>^ defenseVal;
 		array<int>^ statVal;
-		// List of lists of strings to manage spells. Spells start at level 0 which is nifty for index matching.
-		List<List<String^>^>^ spells;
+		// Array of lists of strings to manage spells. Spells start at level 0 which is nifty for index matching.
+		array<List<String^>^>^ spells;
 
 		NPC(void) {
 			senses = gcnew List<String^>();
@@ -89,7 +88,8 @@ namespace NSNPC {
 			statDesc = gcnew array<String^>(6);
 			defenseVal = gcnew array<int>(3);
 			statVal = gcnew array<int>(6);
-			spells = gcnew List<List<String^>^>();
+			spells = gcnew array<List<String^>^>(10);
+			for (int i = 0; i <= 9; ++i) { spells[i] = gcnew List<String^>(); }
 		}
 		~NPC() {}
 		NPC^ operator=(const NPC% other) {

@@ -1,12 +1,13 @@
 #include "CoreForm.h"
 #include "EditorForm.h"
-#include <cliext/vector>
+#include "WeaponForm.h"
+#include <time.h>
 #include <random> 
 
 namespace NPCSheet {
 
 	typedef std::mt19937 MyRNG;
-	uint32_t seed_val;
+	uint32_t seed_val = time(NULL);
 	MyRNG rng;
 	
 	int ModifierCalc(Decimal s) {
@@ -76,6 +77,7 @@ namespace NPCSheet {
 	// Event that triggers when the editor form loads.
 	System::Void EditorForm::EditorForm_Load(System::Object^ sender, System::EventArgs^ e) {
 		efTabControl_SelectedIndexChanged(NULL, EventArgs::Empty);
+		DisplaySpellsInListBox();
 		rng.seed(seed_val); // initialize rng
 	}
 
@@ -253,47 +255,194 @@ namespace NPCSheet {
 		else { Media::SystemSounds::Exclamation->Play(); }
 	}
 
-	// When the Add Action button is clicked in the editor form.
-	System::Void EditorForm::efActionAddButton_Click(System::Object^ sender, System::EventArgs^ e) {
-
-	}
-
 	// When the Weapon Creator button is clicked in the editor form.
 	System::Void EditorForm::efWeaponCreatorButton_Click(System::Object^ sender, System::EventArgs^ e) {
+		array<String^>^ scores = gcnew array<String^>{efStat1TextBox->Text, efStat2TextBox->Text, efStat3TextBox->Text,
+			efStat4TextBox->Text, efStat5TextBox->Text, efStat6TextBox->Text, efStat1ModLabel->Text, efStat2ModLabel->Text,
+			efStat3ModLabel->Text, efStat4ModLabel->Text, efStat5ModLabel->Text, efStat6ModLabel->Text };
 
+		WeaponForm w(scores);
+		w.ShowDialog();
+		if (w.DialogResult == System::Windows::Forms::DialogResult::OK) {
+			n->weapons->Add(w.retWeapon());
+			int i = n->weapons->Count - 1;
+			UpdateWeaponsListBox(i);
+		}
 	}
 
-	// When the View Weapon button is clicked in the editor form.
-	System::Void EditorForm::efViewWeapButton_Click(System::Object^ sender, System::EventArgs^ e) {
-
+	System::Void EditorForm::UpdateWeaponsListBox(int idx) {
+		String^ litem = n->weapons[idx]->wpName;
+		if (n->weapons[idx]->atkBonus > -1) { litem += " +"; }
+		litem += Convert::ToString(n->weapons[idx]->atkBonus);
+		litem += " [" + n->weapons[idx]->dmgA + " ";
+		litem += n->weapons[idx]->typeA;
+		if (!String::IsNullOrEmpty(n->weapons[idx]->dmgB)) {
+			litem += " / " + n->weapons[idx]->dmgB + " ";
+			litem += n->weapons[idx]->typeB;
+		}
+		litem += "]";
+		efWeaponsListBox->Items->Add(litem);
+		efWeaponsListBox->Refresh();
 	}
 
 	// When the Delete Weapon button is clicked in the editor form.
 	System::Void EditorForm::efDeleteWeapButton_Click(System::Object^ sender, System::EventArgs^ e) {
+		int idx = efWeaponsListBox->SelectedIndex;
+		if (idx != -1) {
+			efWeaponsListBox->Items->RemoveAt(idx);
+			n->weapons->RemoveAt(idx);
+			efWeaponsListBox->Refresh();
+		}
+		else { Media::SystemSounds::Exclamation->Play(); }
+	}
 
+	// When the Add Action button is clicked in the editor form.
+	System::Void EditorForm::efActionAddButton_Click(System::Object^ sender, System::EventArgs^ e) {
+		String^ an = efActionNameTextBox->Text;
+		String^ ad = efActionDescTextBox->Text;
+		if (!String::IsNullOrEmpty(an) && !String::IsNullOrEmpty(ad)) {
+			n->actionsName->Add(an);
+			n->actionsDesc->Add(ad);
+			efActionListBox->Items->Add(an);
+			efActionListBox->Refresh();
+			efActionNameTextBox->Clear();
+			efActionDescTextBox->Clear();
+		}
+		else { Media::SystemSounds::Exclamation->Play(); }
 	}
 
 	// When the View Action button is clicked in the editor form.
 	System::Void EditorForm::efViewButton_Click(System::Object^ sender, System::EventArgs^ e) {
-
+		int idx = efActionListBox->SelectedIndex;
+		efActionNameTextBox->Text = n->actionsName[idx];
+		efActionDescTextBox->Text = n->actionsDesc[idx];
 	}
 
 	// When the Delete Action button is clicked in the editor form.
 	System::Void EditorForm::efActionDeleteButton_Click(System::Object^ sender, System::EventArgs^ e) {
-
+		int idx = efActionListBox->SelectedIndex;
+		if (idx != -1) {
+			n->actionsName->RemoveAt(idx);
+			n->actionsDesc->RemoveAt(idx);
+			efActionListBox->Items->RemoveAt(idx);
+			efActionListBox->Refresh();
+		}
 	}
 
 	// When the Add Spell button is clicked in the editor form.
 	System::Void EditorForm::efSpellsAddButton_Click(System::Object^ sender, System::EventArgs^ e) {
-
+		if (!String::IsNullOrEmpty(efSpellsTextBox->Text)) {
+			int idx = Decimal::ToInt32(efSpellsNumUpDown->Value);
+			n->spells[idx]->Add(efSpellsTextBox->Text);
+			DisplaySpellsInListBox();
+		}
+		else { Media::SystemSounds::Exclamation->Play(); }
 	}
 
 	// When the Remove Last button is clicked in the editor form.
 	System::Void EditorForm::efSpellsRemoveButton_Click(System::Object^ sender, System::EventArgs^ e) {
+		int idx = efSpellsListBox->SelectedIndex;
+		if (idx != -1 && n->spells[idx]->Count > 0) {
+			n->spells[idx]->RemoveAt((n->spells[idx]->Count) - 1);
+			efSpellsListBox->SelectedIndex = -1;
+			DisplaySpellsInListBox();
+		}
+	}
+
+	System::Void EditorForm::DisplaySpellsInListBox() {
+		efSpellsListBox->Items->Clear();
+		String^ litem;
+		for (int i = 0; i <= 9; ++i) {
+			litem = Convert::ToString(i) + ": ";
+			for each (String^ s in n->spells[i]) {
+				litem += s + ", ";
+			}
+			if (litem->Length > 3) { litem = litem->Substring(0, (litem->Length - 2)); }
+			efSpellsListBox->Items->Add(litem);
+		}
+		efSpellsListBox->Refresh();
+	}
+
+	// When the save button is clicked on the weapon form.
+	System::Void WeaponForm::wfSaveButton_Click(System::Object^ sender, System::EventArgs^ e) {
+		if (wfValidateSave()) {
+			String^ wname = wfNameTextBox->Text;
+			int amod1 = 0, amod2 = 0, amod3 = 0, cmod = 0;
+			if (wfAttackComboBox->SelectedIndex != 0) { amod1 = mods[(wfAttackComboBox->SelectedIndex)-1]; } // Add ability score mod if applicable.
+			int watk = Decimal::ToInt32(wfAttackNumUpDown->Value) + amod1;
+			
+			// Weapon damage 1.
+			if (wfDamage1ComboBox->SelectedIndex != 0) { amod2 = mods[(wfDamage1ComboBox->SelectedIndex) - 1]; }
+			String^ wdmg1 = Convert::ToString(wfDice1NumUpDown->Value) + wfDmgDice1ComboBox->Text;
+			cmod = amod2 + Decimal::ToInt32(wfDmg1NumUpDown->Value);
+			if (cmod > -1) { wdmg1 += "+"; }
+			wdmg1 += Convert::ToString(cmod);
+			String^ wtype1 = wfType1TextBox->Text;
+			
+			// Weapon damage 2
+			String^ wdmg2 = "";
+			String^ wtype2 = "";
+			if (wfUseCheckBox->Checked) {
+				if (wfDamage2ComboBox->SelectedIndex != 0) { amod3 = mods[(wfDamage2ComboBox->SelectedIndex) - 1]; }
+				cmod = 0;
+				wdmg2 = Convert::ToString(wfDmg2NumUpDown->Value) + wfDmgDice2ComboBox->Text;
+				cmod = amod3 + Decimal::ToInt32(wfDmg2NumUpDown->Value);
+				if (cmod > -1) { wdmg2 += "+"; }
+				wdmg2 += Convert::ToString(cmod);
+				wtype2 = wfType2TextBox->Text;
+			}
+			String^ wrng = wfRangeTextBox->Text;
+			wp = gcnew Weapon(wname, watk, wdmg1, wtype1, wdmg2, wtype2, wrng);
+			this->DialogResult = System::Windows::Forms::DialogResult::OK;
+			this->Close();
+		} else { Media::SystemSounds::Exclamation->Play(); }
+	}
+
+	// When the cancel button is clicked on the weapon form.
+	System::Void WeaponForm::wfCancelButton_Click(System::Object^ sender, System::EventArgs^ e) {
+		this->DialogResult = System::Windows::Forms::DialogResult::Cancel;
+		this->Close();
+	}
+
+	// Event that triggers when the Use checkbox is checked in the weapon form.
+	System::Void WeaponForm::wfUseCheckBox_CheckedChanged(System::Object^ sender, System::EventArgs^ e) {
+		if (wfUseCheckBox->Checked == true) {
+			wfDamage2Label->ForeColor = SystemColors::ControlText;
+			wfType2Label->ForeColor = SystemColors::ControlText;
+			wfPlusLabel4->ForeColor = SystemColors::ControlText;
+			wfPlusLabel5->ForeColor = SystemColors::ControlText;
+		}
+		else {
+			wfDamage2Label->ForeColor = SystemColors::ControlDark;
+			wfType2Label->ForeColor = SystemColors::ControlDark;
+			wfPlusLabel4->ForeColor = SystemColors::ControlDark;
+			wfPlusLabel5->ForeColor = SystemColors::ControlDark;
+		}
+		wfDice2NumUpDown->Enabled = wfUseCheckBox->Checked;
+		wfDmgDice2ComboBox->Enabled = wfUseCheckBox->Checked;
+		wfDamage2ComboBox->Enabled = wfUseCheckBox->Checked;
+		wfDmg2NumUpDown->Enabled = wfUseCheckBox->Checked;
+		wfType2TextBox->Enabled = wfUseCheckBox->Checked;
 
 	}
 
 	NPC^ EditorForm::retNPC() {
 		return n;
+	}
+
+	Weapon^ WeaponForm::retWeapon() {
+		return wp;
+	}
+
+	bool WeaponForm::wfValidateSave() {
+		bool validate1, validate2, validate3, validate4 = true, validate5 = true;
+		validate1 = !String::IsNullOrEmpty(wfNameTextBox->Text);
+		validate2 = (wfDmgDice1ComboBox->SelectedIndex != -1);
+		validate3 = !String::IsNullOrEmpty(wfType1TextBox->Text);
+		if (wfUseCheckBox->Checked) {
+			validate4 = (wfDmgDice2ComboBox->SelectedIndex != -1);
+			validate5 = !String::IsNullOrEmpty(wfType2TextBox->Text);
+		}
+		return (validate1 && validate2 && validate3 && validate4 && validate5);
 	}
 }
