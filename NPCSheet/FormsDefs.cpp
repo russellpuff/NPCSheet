@@ -253,6 +253,46 @@ namespace NPCSheet {
 		else { Media::SystemSounds::Exclamation->Play(); }
 	}
 
+	// When the Add Action button is clicked in the editor form.
+	System::Void EditorForm::efActionAddButton_Click(System::Object^ sender, System::EventArgs^ e) {
+
+	}
+
+	// When the Weapon Creator button is clicked in the editor form.
+	System::Void EditorForm::efWeaponCreatorButton_Click(System::Object^ sender, System::EventArgs^ e) {
+
+	}
+
+	// When the View Weapon button is clicked in the editor form.
+	System::Void EditorForm::efViewWeapButton_Click(System::Object^ sender, System::EventArgs^ e) {
+
+	}
+
+	// When the Delete Weapon button is clicked in the editor form.
+	System::Void EditorForm::efDeleteWeapButton_Click(System::Object^ sender, System::EventArgs^ e) {
+
+	}
+
+	// When the View Action button is clicked in the editor form.
+	System::Void EditorForm::efViewButton_Click(System::Object^ sender, System::EventArgs^ e) {
+
+	}
+
+	// When the Delete Action button is clicked in the editor form.
+	System::Void EditorForm::efActionDeleteButton_Click(System::Object^ sender, System::EventArgs^ e) {
+
+	}
+
+	// When the Add Spell button is clicked in the editor form.
+	System::Void EditorForm::efSpellsAddButton_Click(System::Object^ sender, System::EventArgs^ e) {
+
+	}
+
+	// When the Remove Last button is clicked in the editor form.
+	System::Void EditorForm::efSpellsRemoveButton_Click(System::Object^ sender, System::EventArgs^ e) {
+
+	}
+
 	NPC^ EditorForm::retNPC() {
 		return n;
 	}

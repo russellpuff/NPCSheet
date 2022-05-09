@@ -60,7 +60,8 @@ namespace NPCSheet {
 	private: System::Windows::Forms::NumericUpDown^ efDef2NumUpDown;
 	private: System::Windows::Forms::NumericUpDown^ efDef1NumUpDown;
 	private: System::Windows::Forms::NumericUpDown^ efDef3NumUpDown;
-	private: System::Windows::Forms::TableLayoutPanel^ tableLayoutPanel1;
+	private: System::Windows::Forms::TableLayoutPanel^ efSavesSkillsTableLayout;
+
 	private: System::Windows::Forms::NumericUpDown^ efSkillsNumUpDown;
 	private: System::Windows::Forms::NumericUpDown^ efSavesNumUpDown;
 	private: System::Windows::Forms::TextBox^ efSavesTextBox;
@@ -71,13 +72,41 @@ namespace NPCSheet {
 	private: System::Windows::Forms::Button^ efSavesDeleteButton;
 	private: System::Windows::Forms::Button^ efSkillsAddButton;
 	private: System::Windows::Forms::Button^ efSavesAddButton;
-	private: System::Windows::Forms::TableLayoutPanel^ tableLayoutPanel2;
+	private: System::Windows::Forms::TableLayoutPanel^ efSpellsTableLayout;
+
 	private: System::Windows::Forms::Label^ label1;
 	private: System::Windows::Forms::ListBox^ efSpellsListBox;
-	private: System::Windows::Forms::TextBox^ textBox1;
+	private: System::Windows::Forms::TextBox^ efSpellsTextBox;
+
 	private: System::Windows::Forms::Button^ efSpellsAddButton;
 	private: System::Windows::Forms::Button^ efSpellsRemoveButton;
 	private: System::Windows::Forms::NumericUpDown^ efSpellsNumUpDown;
+	private: System::Windows::Forms::Label^ efActionsLabel;
+	private: System::Windows::Forms::TextBox^ efActionDescTextBox;
+	private: System::Windows::Forms::Button^ efViewButton;
+	private: System::Windows::Forms::Button^ efActionDeleteButton;
+
+	private: System::Windows::Forms::Button^ efActionAddButton;
+
+	private: System::Windows::Forms::TextBox^ efActionNameTextBox;
+	private: System::Windows::Forms::ListBox^ efActionListBox;
+	private: System::Windows::Forms::Label^ efHorizLineLabel3;
+
+	private: System::Windows::Forms::Label^ efVertLineLabel;
+	private: System::Windows::Forms::Label^ efWeaponsLabel;
+	private: System::Windows::Forms::ListBox^ efWeaponsListBox;
+
+	private: System::Windows::Forms::Button^ efDeleteWeapButton;
+
+	private: System::Windows::Forms::Button^ efViewWeapButton;
+
+	private: System::Windows::Forms::Label^ label2;
+	private: System::Windows::Forms::Button^ efWeaponCreatorButton;
+
+
+
+
+
 
 
 	private: NPC^ n; // Temporary NPC object that will be returned if all is good. 
@@ -283,7 +312,7 @@ namespace NPCSheet {
 			this->efSPNumUpDown = (gcnew System::Windows::Forms::NumericUpDown());
 			this->efInitLabel = (gcnew System::Windows::Forms::Label());
 			this->efInitNumUpDown = (gcnew System::Windows::Forms::NumericUpDown());
-			this->tableLayoutPanel1 = (gcnew System::Windows::Forms::TableLayoutPanel());
+			this->efSavesSkillsTableLayout = (gcnew System::Windows::Forms::TableLayoutPanel());
 			this->efSkillsNumUpDown = (gcnew System::Windows::Forms::NumericUpDown());
 			this->efSavesNumUpDown = (gcnew System::Windows::Forms::NumericUpDown());
 			this->efSavesTextBox = (gcnew System::Windows::Forms::TextBox());
@@ -291,17 +320,32 @@ namespace NPCSheet {
 			this->efSkillsListBox = (gcnew System::Windows::Forms::ListBox());
 			this->efSkillsTextBox = (gcnew System::Windows::Forms::TextBox());
 			this->efTabPage3 = (gcnew System::Windows::Forms::TabPage());
+			this->efWeaponCreatorButton = (gcnew System::Windows::Forms::Button());
+			this->efDeleteWeapButton = (gcnew System::Windows::Forms::Button());
+			this->efViewWeapButton = (gcnew System::Windows::Forms::Button());
+			this->label2 = (gcnew System::Windows::Forms::Label());
+			this->efWeaponsListBox = (gcnew System::Windows::Forms::ListBox());
+			this->efVertLineLabel = (gcnew System::Windows::Forms::Label());
+			this->efWeaponsLabel = (gcnew System::Windows::Forms::Label());
+			this->efHorizLineLabel3 = (gcnew System::Windows::Forms::Label());
+			this->efViewButton = (gcnew System::Windows::Forms::Button());
+			this->efActionDeleteButton = (gcnew System::Windows::Forms::Button());
+			this->efActionAddButton = (gcnew System::Windows::Forms::Button());
+			this->efActionNameTextBox = (gcnew System::Windows::Forms::TextBox());
+			this->efActionListBox = (gcnew System::Windows::Forms::ListBox());
+			this->efActionsLabel = (gcnew System::Windows::Forms::Label());
+			this->efActionDescTextBox = (gcnew System::Windows::Forms::TextBox());
+			this->efSpellsTableLayout = (gcnew System::Windows::Forms::TableLayoutPanel());
+			this->efSpellsListBox = (gcnew System::Windows::Forms::ListBox());
+			this->efSpellsTextBox = (gcnew System::Windows::Forms::TextBox());
+			this->label1 = (gcnew System::Windows::Forms::Label());
+			this->efSpellsAddButton = (gcnew System::Windows::Forms::Button());
+			this->efSpellsRemoveButton = (gcnew System::Windows::Forms::Button());
+			this->efSpellsNumUpDown = (gcnew System::Windows::Forms::NumericUpDown());
 			this->efTabPage4 = (gcnew System::Windows::Forms::TabPage());
 			this->efTabPage5 = (gcnew System::Windows::Forms::TabPage());
 			this->efSaveButton = (gcnew System::Windows::Forms::Button());
 			this->efCancelButton = (gcnew System::Windows::Forms::Button());
-			this->label1 = (gcnew System::Windows::Forms::Label());
-			this->tableLayoutPanel2 = (gcnew System::Windows::Forms::TableLayoutPanel());
-			this->efSpellsListBox = (gcnew System::Windows::Forms::ListBox());
-			this->textBox1 = (gcnew System::Windows::Forms::TextBox());
-			this->efSpellsAddButton = (gcnew System::Windows::Forms::Button());
-			this->efSpellsRemoveButton = (gcnew System::Windows::Forms::Button());
-			this->efSpellsNumUpDown = (gcnew System::Windows::Forms::NumericUpDown());
 			this->efTableLayout->SuspendLayout();
 			this->efTabControl->SuspendLayout();
 			this->efTabPage1->SuspendLayout();
@@ -322,11 +366,11 @@ namespace NPCSheet {
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->efHPNumUpDown))->BeginInit();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->efSPNumUpDown))->BeginInit();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->efInitNumUpDown))->BeginInit();
-			this->tableLayoutPanel1->SuspendLayout();
+			this->efSavesSkillsTableLayout->SuspendLayout();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->efSkillsNumUpDown))->BeginInit();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->efSavesNumUpDown))->BeginInit();
 			this->efTabPage3->SuspendLayout();
-			this->tableLayoutPanel2->SuspendLayout();
+			this->efSpellsTableLayout->SuspendLayout();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->efSpellsNumUpDown))->BeginInit();
 			this->SuspendLayout();
 			// 
@@ -618,7 +662,7 @@ namespace NPCSheet {
 			this->efTabPage2->Controls->Add(this->efStatsLabel);
 			this->efTabPage2->Controls->Add(this->efStatsTableLayout);
 			this->efTabPage2->Controls->Add(this->efOtherStatsTableLayout);
-			this->efTabPage2->Controls->Add(this->tableLayoutPanel1);
+			this->efTabPage2->Controls->Add(this->efSavesSkillsTableLayout);
 			this->efTabPage2->Location = System::Drawing::Point(4, 22);
 			this->efTabPage2->Name = L"efTabPage2";
 			this->efTabPage2->Padding = System::Windows::Forms::Padding(3);
@@ -820,7 +864,7 @@ namespace NPCSheet {
 			this->efDef1TextBox->MaximumSize = System::Drawing::Size(69, 29);
 			this->efDef1TextBox->MinimumSize = System::Drawing::Size(69, 29);
 			this->efDef1TextBox->Name = L"efDef1TextBox";
-			this->efDef1TextBox->Size = System::Drawing::Size(69, 29);
+			this->efDef1TextBox->Size = System::Drawing::Size(69, 31);
 			this->efDef1TextBox->TabIndex = 20;
 			// 
 			// efDef2NumUpDown
@@ -1303,30 +1347,32 @@ namespace NPCSheet {
 			this->efInitNumUpDown->Size = System::Drawing::Size(71, 29);
 			this->efInitNumUpDown->TabIndex = 21;
 			// 
-			// tableLayoutPanel1
+			// efSavesSkillsTableLayout
 			// 
-			this->tableLayoutPanel1->ColumnCount = 4;
-			this->tableLayoutPanel1->ColumnStyles->Add((gcnew System::Windows::Forms::ColumnStyle(System::Windows::Forms::SizeType::Percent,
+			this->efSavesSkillsTableLayout->ColumnCount = 4;
+			this->efSavesSkillsTableLayout->ColumnStyles->Add((gcnew System::Windows::Forms::ColumnStyle(System::Windows::Forms::SizeType::Percent,
 				35)));
-			this->tableLayoutPanel1->ColumnStyles->Add((gcnew System::Windows::Forms::ColumnStyle(System::Windows::Forms::SizeType::Percent,
+			this->efSavesSkillsTableLayout->ColumnStyles->Add((gcnew System::Windows::Forms::ColumnStyle(System::Windows::Forms::SizeType::Percent,
 				15)));
-			this->tableLayoutPanel1->ColumnStyles->Add((gcnew System::Windows::Forms::ColumnStyle(System::Windows::Forms::SizeType::Percent,
+			this->efSavesSkillsTableLayout->ColumnStyles->Add((gcnew System::Windows::Forms::ColumnStyle(System::Windows::Forms::SizeType::Percent,
 				35)));
-			this->tableLayoutPanel1->ColumnStyles->Add((gcnew System::Windows::Forms::ColumnStyle(System::Windows::Forms::SizeType::Percent,
+			this->efSavesSkillsTableLayout->ColumnStyles->Add((gcnew System::Windows::Forms::ColumnStyle(System::Windows::Forms::SizeType::Percent,
 				15)));
-			this->tableLayoutPanel1->Controls->Add(this->efSkillsNumUpDown, 3, 0);
-			this->tableLayoutPanel1->Controls->Add(this->efSavesNumUpDown, 1, 0);
-			this->tableLayoutPanel1->Controls->Add(this->efSavesTextBox, 0, 0);
-			this->tableLayoutPanel1->Controls->Add(this->efSavesListBox, 0, 1);
-			this->tableLayoutPanel1->Controls->Add(this->efSkillsListBox, 2, 1);
-			this->tableLayoutPanel1->Controls->Add(this->efSkillsTextBox, 2, 0);
-			this->tableLayoutPanel1->Location = System::Drawing::Point(3, 361);
-			this->tableLayoutPanel1->Name = L"tableLayoutPanel1";
-			this->tableLayoutPanel1->RowCount = 2;
-			this->tableLayoutPanel1->RowStyles->Add((gcnew System::Windows::Forms::RowStyle(System::Windows::Forms::SizeType::Absolute, 35)));
-			this->tableLayoutPanel1->RowStyles->Add((gcnew System::Windows::Forms::RowStyle(System::Windows::Forms::SizeType::Percent, 100)));
-			this->tableLayoutPanel1->Size = System::Drawing::Size(473, 180);
-			this->tableLayoutPanel1->TabIndex = 22;
+			this->efSavesSkillsTableLayout->Controls->Add(this->efSkillsNumUpDown, 3, 0);
+			this->efSavesSkillsTableLayout->Controls->Add(this->efSavesNumUpDown, 1, 0);
+			this->efSavesSkillsTableLayout->Controls->Add(this->efSavesTextBox, 0, 0);
+			this->efSavesSkillsTableLayout->Controls->Add(this->efSavesListBox, 0, 1);
+			this->efSavesSkillsTableLayout->Controls->Add(this->efSkillsListBox, 2, 1);
+			this->efSavesSkillsTableLayout->Controls->Add(this->efSkillsTextBox, 2, 0);
+			this->efSavesSkillsTableLayout->Location = System::Drawing::Point(3, 361);
+			this->efSavesSkillsTableLayout->Name = L"efSavesSkillsTableLayout";
+			this->efSavesSkillsTableLayout->RowCount = 2;
+			this->efSavesSkillsTableLayout->RowStyles->Add((gcnew System::Windows::Forms::RowStyle(System::Windows::Forms::SizeType::Absolute,
+				35)));
+			this->efSavesSkillsTableLayout->RowStyles->Add((gcnew System::Windows::Forms::RowStyle(System::Windows::Forms::SizeType::Percent,
+				100)));
+			this->efSavesSkillsTableLayout->Size = System::Drawing::Size(473, 180);
+			this->efSavesSkillsTableLayout->TabIndex = 22;
 			// 
 			// efSkillsNumUpDown
 			// 
@@ -1362,7 +1408,7 @@ namespace NPCSheet {
 			// 
 			// efSavesListBox
 			// 
-			this->tableLayoutPanel1->SetColumnSpan(this->efSavesListBox, 2);
+			this->efSavesSkillsTableLayout->SetColumnSpan(this->efSavesListBox, 2);
 			this->efSavesListBox->Dock = System::Windows::Forms::DockStyle::Fill;
 			this->efSavesListBox->FormattingEnabled = true;
 			this->efSavesListBox->Location = System::Drawing::Point(3, 38);
@@ -1372,7 +1418,7 @@ namespace NPCSheet {
 			// 
 			// efSkillsListBox
 			// 
-			this->tableLayoutPanel1->SetColumnSpan(this->efSkillsListBox, 2);
+			this->efSavesSkillsTableLayout->SetColumnSpan(this->efSkillsListBox, 2);
 			this->efSkillsListBox->Dock = System::Windows::Forms::DockStyle::Fill;
 			this->efSkillsListBox->FormattingEnabled = true;
 			this->efSkillsListBox->Location = System::Drawing::Point(238, 38);
@@ -1392,7 +1438,22 @@ namespace NPCSheet {
 			// 
 			// efTabPage3
 			// 
-			this->efTabPage3->Controls->Add(this->tableLayoutPanel2);
+			this->efTabPage3->Controls->Add(this->efWeaponCreatorButton);
+			this->efTabPage3->Controls->Add(this->efDeleteWeapButton);
+			this->efTabPage3->Controls->Add(this->efViewWeapButton);
+			this->efTabPage3->Controls->Add(this->label2);
+			this->efTabPage3->Controls->Add(this->efWeaponsListBox);
+			this->efTabPage3->Controls->Add(this->efVertLineLabel);
+			this->efTabPage3->Controls->Add(this->efWeaponsLabel);
+			this->efTabPage3->Controls->Add(this->efHorizLineLabel3);
+			this->efTabPage3->Controls->Add(this->efViewButton);
+			this->efTabPage3->Controls->Add(this->efActionDeleteButton);
+			this->efTabPage3->Controls->Add(this->efActionAddButton);
+			this->efTabPage3->Controls->Add(this->efActionNameTextBox);
+			this->efTabPage3->Controls->Add(this->efActionListBox);
+			this->efTabPage3->Controls->Add(this->efActionsLabel);
+			this->efTabPage3->Controls->Add(this->efActionDescTextBox);
+			this->efTabPage3->Controls->Add(this->efSpellsTableLayout);
 			this->efTabPage3->Location = System::Drawing::Point(4, 22);
 			this->efTabPage3->Name = L"efTabPage3";
 			this->efTabPage3->Padding = System::Windows::Forms::Padding(3);
@@ -1400,6 +1461,252 @@ namespace NPCSheet {
 			this->efTabPage3->TabIndex = 2;
 			this->efTabPage3->Text = L"Actions";
 			this->efTabPage3->UseVisualStyleBackColor = true;
+			// 
+			// efWeaponCreatorButton
+			// 
+			this->efWeaponCreatorButton->Anchor = static_cast<System::Windows::Forms::AnchorStyles>((System::Windows::Forms::AnchorStyles::Bottom | System::Windows::Forms::AnchorStyles::Left));
+			this->efWeaponCreatorButton->Location = System::Drawing::Point(359, 35);
+			this->efWeaponCreatorButton->Name = L"efWeaponCreatorButton";
+			this->efWeaponCreatorButton->Size = System::Drawing::Size(119, 34);
+			this->efWeaponCreatorButton->TabIndex = 36;
+			this->efWeaponCreatorButton->Text = L"Launch Weapon Creator";
+			this->efWeaponCreatorButton->UseVisualStyleBackColor = true;
+			this->efWeaponCreatorButton->Click += gcnew System::EventHandler(this, &EditorForm::efWeaponCreatorButton_Click);
+			// 
+			// efDeleteWeapButton
+			// 
+			this->efDeleteWeapButton->Anchor = static_cast<System::Windows::Forms::AnchorStyles>((System::Windows::Forms::AnchorStyles::Bottom | System::Windows::Forms::AnchorStyles::Left));
+			this->efDeleteWeapButton->Location = System::Drawing::Point(359, 228);
+			this->efDeleteWeapButton->Name = L"efDeleteWeapButton";
+			this->efDeleteWeapButton->Size = System::Drawing::Size(122, 29);
+			this->efDeleteWeapButton->TabIndex = 35;
+			this->efDeleteWeapButton->Text = L"Delete Weapon";
+			this->efDeleteWeapButton->UseVisualStyleBackColor = true;
+			this->efDeleteWeapButton->Click += gcnew System::EventHandler(this, &EditorForm::efDeleteWeapButton_Click);
+			// 
+			// efViewWeapButton
+			// 
+			this->efViewWeapButton->Anchor = static_cast<System::Windows::Forms::AnchorStyles>((System::Windows::Forms::AnchorStyles::Bottom | System::Windows::Forms::AnchorStyles::Left));
+			this->efViewWeapButton->Location = System::Drawing::Point(231, 228);
+			this->efViewWeapButton->Name = L"efViewWeapButton";
+			this->efViewWeapButton->Size = System::Drawing::Size(122, 29);
+			this->efViewWeapButton->TabIndex = 34;
+			this->efViewWeapButton->Text = L"View Weapon";
+			this->efViewWeapButton->UseVisualStyleBackColor = true;
+			this->efViewWeapButton->Click += gcnew System::EventHandler(this, &EditorForm::efViewWeapButton_Click);
+			// 
+			// label2
+			// 
+			this->label2->BorderStyle = System::Windows::Forms::BorderStyle::Fixed3D;
+			this->label2->Location = System::Drawing::Point(224, 273);
+			this->label2->Name = L"label2";
+			this->label2->Size = System::Drawing::Size(257, 2);
+			this->label2->TabIndex = 33;
+			// 
+			// efWeaponsListBox
+			// 
+			this->efWeaponsListBox->FormattingEnabled = true;
+			this->efWeaponsListBox->Location = System::Drawing::Point(231, 75);
+			this->efWeaponsListBox->Name = L"efWeaponsListBox";
+			this->efWeaponsListBox->Size = System::Drawing::Size(247, 147);
+			this->efWeaponsListBox->TabIndex = 32;
+			// 
+			// efVertLineLabel
+			// 
+			this->efVertLineLabel->BackColor = System::Drawing::Color::Silver;
+			this->efVertLineLabel->Location = System::Drawing::Point(224, 3);
+			this->efVertLineLabel->Name = L"efVertLineLabel";
+			this->efVertLineLabel->Size = System::Drawing::Size(1, 272);
+			this->efVertLineLabel->TabIndex = 31;
+			// 
+			// efWeaponsLabel
+			// 
+			this->efWeaponsLabel->Anchor = static_cast<System::Windows::Forms::AnchorStyles>((System::Windows::Forms::AnchorStyles::Bottom | System::Windows::Forms::AnchorStyles::Left));
+			this->efWeaponsLabel->AutoSize = true;
+			this->efWeaponsLabel->Font = (gcnew System::Drawing::Font(L"Segoe UI", 15.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->efWeaponsLabel->Location = System::Drawing::Point(231, 35);
+			this->efWeaponsLabel->Name = L"efWeaponsLabel";
+			this->efWeaponsLabel->Padding = System::Windows::Forms::Padding(0, 0, 0, 3);
+			this->efWeaponsLabel->Size = System::Drawing::Size(99, 33);
+			this->efWeaponsLabel->TabIndex = 30;
+			this->efWeaponsLabel->Text = L"Weapons";
+			// 
+			// efHorizLineLabel3
+			// 
+			this->efHorizLineLabel3->BorderStyle = System::Windows::Forms::BorderStyle::Fixed3D;
+			this->efHorizLineLabel3->Location = System::Drawing::Point(-1, 345);
+			this->efHorizLineLabel3->Name = L"efHorizLineLabel3";
+			this->efHorizLineLabel3->Size = System::Drawing::Size(480, 2);
+			this->efHorizLineLabel3->TabIndex = 29;
+			// 
+			// efViewButton
+			// 
+			this->efViewButton->Anchor = static_cast<System::Windows::Forms::AnchorStyles>((System::Windows::Forms::AnchorStyles::Bottom | System::Windows::Forms::AnchorStyles::Left));
+			this->efViewButton->Location = System::Drawing::Point(231, 278);
+			this->efViewButton->Name = L"efViewButton";
+			this->efViewButton->Size = System::Drawing::Size(103, 29);
+			this->efViewButton->TabIndex = 28;
+			this->efViewButton->Text = L"View Action";
+			this->efViewButton->UseVisualStyleBackColor = true;
+			this->efViewButton->Click += gcnew System::EventHandler(this, &EditorForm::efViewButton_Click);
+			// 
+			// efActionDeleteButton
+			// 
+			this->efActionDeleteButton->Anchor = static_cast<System::Windows::Forms::AnchorStyles>((System::Windows::Forms::AnchorStyles::Bottom | System::Windows::Forms::AnchorStyles::Left));
+			this->efActionDeleteButton->Location = System::Drawing::Point(231, 313);
+			this->efActionDeleteButton->Name = L"efActionDeleteButton";
+			this->efActionDeleteButton->Size = System::Drawing::Size(103, 29);
+			this->efActionDeleteButton->TabIndex = 27;
+			this->efActionDeleteButton->Text = L"Delete Action";
+			this->efActionDeleteButton->UseVisualStyleBackColor = true;
+			this->efActionDeleteButton->Click += gcnew System::EventHandler(this, &EditorForm::efActionDeleteButton_Click);
+			// 
+			// efActionAddButton
+			// 
+			this->efActionAddButton->Anchor = static_cast<System::Windows::Forms::AnchorStyles>((System::Windows::Forms::AnchorStyles::Bottom | System::Windows::Forms::AnchorStyles::Left));
+			this->efActionAddButton->Location = System::Drawing::Point(146, 40);
+			this->efActionAddButton->Name = L"efActionAddButton";
+			this->efActionAddButton->Size = System::Drawing::Size(75, 29);
+			this->efActionAddButton->TabIndex = 26;
+			this->efActionAddButton->Text = L"Add";
+			this->efActionAddButton->UseVisualStyleBackColor = true;
+			this->efActionAddButton->Click += gcnew System::EventHandler(this, &EditorForm::efActionAddButton_Click);
+			// 
+			// efActionNameTextBox
+			// 
+			this->efActionNameTextBox->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Regular,
+				System::Drawing::GraphicsUnit::Point, static_cast<System::Byte>(0)));
+			this->efActionNameTextBox->Location = System::Drawing::Point(7, 40);
+			this->efActionNameTextBox->Name = L"efActionNameTextBox";
+			this->efActionNameTextBox->Size = System::Drawing::Size(133, 29);
+			this->efActionNameTextBox->TabIndex = 20;
+			// 
+			// efActionListBox
+			// 
+			this->efActionListBox->FormattingEnabled = true;
+			this->efActionListBox->Location = System::Drawing::Point(7, 221);
+			this->efActionListBox->Name = L"efActionListBox";
+			this->efActionListBox->Size = System::Drawing::Size(214, 121);
+			this->efActionListBox->TabIndex = 19;
+			// 
+			// efActionsLabel
+			// 
+			this->efActionsLabel->Anchor = static_cast<System::Windows::Forms::AnchorStyles>((System::Windows::Forms::AnchorStyles::Bottom | System::Windows::Forms::AnchorStyles::Left));
+			this->efActionsLabel->AutoSize = true;
+			this->efActionsLabel->Font = (gcnew System::Drawing::Font(L"Segoe UI", 15.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->efActionsLabel->Location = System::Drawing::Point(6, 6);
+			this->efActionsLabel->Name = L"efActionsLabel";
+			this->efActionsLabel->Padding = System::Windows::Forms::Padding(0, 0, 0, 3);
+			this->efActionsLabel->Size = System::Drawing::Size(82, 33);
+			this->efActionsLabel->TabIndex = 18;
+			this->efActionsLabel->Text = L"Actions";
+			// 
+			// efActionDescTextBox
+			// 
+			this->efActionDescTextBox->Location = System::Drawing::Point(7, 75);
+			this->efActionDescTextBox->Multiline = true;
+			this->efActionDescTextBox->Name = L"efActionDescTextBox";
+			this->efActionDescTextBox->Size = System::Drawing::Size(214, 140);
+			this->efActionDescTextBox->TabIndex = 17;
+			// 
+			// efSpellsTableLayout
+			// 
+			this->efSpellsTableLayout->ColumnCount = 5;
+			this->efSpellsTableLayout->ColumnStyles->Add((gcnew System::Windows::Forms::ColumnStyle(System::Windows::Forms::SizeType::Absolute,
+				73)));
+			this->efSpellsTableLayout->ColumnStyles->Add((gcnew System::Windows::Forms::ColumnStyle(System::Windows::Forms::SizeType::Absolute,
+				152)));
+			this->efSpellsTableLayout->ColumnStyles->Add((gcnew System::Windows::Forms::ColumnStyle(System::Windows::Forms::SizeType::Absolute,
+				58)));
+			this->efSpellsTableLayout->ColumnStyles->Add((gcnew System::Windows::Forms::ColumnStyle(System::Windows::Forms::SizeType::Absolute,
+				100)));
+			this->efSpellsTableLayout->ColumnStyles->Add((gcnew System::Windows::Forms::ColumnStyle(System::Windows::Forms::SizeType::Absolute,
+				102)));
+			this->efSpellsTableLayout->Controls->Add(this->efSpellsListBox, 0, 1);
+			this->efSpellsTableLayout->Controls->Add(this->efSpellsTextBox, 1, 0);
+			this->efSpellsTableLayout->Controls->Add(this->label1, 0, 0);
+			this->efSpellsTableLayout->Controls->Add(this->efSpellsAddButton, 3, 0);
+			this->efSpellsTableLayout->Controls->Add(this->efSpellsRemoveButton, 4, 0);
+			this->efSpellsTableLayout->Controls->Add(this->efSpellsNumUpDown, 2, 0);
+			this->efSpellsTableLayout->Location = System::Drawing::Point(-1, 348);
+			this->efSpellsTableLayout->Name = L"efSpellsTableLayout";
+			this->efSpellsTableLayout->RowCount = 2;
+			this->efSpellsTableLayout->RowStyles->Add((gcnew System::Windows::Forms::RowStyle(System::Windows::Forms::SizeType::Absolute,
+				35)));
+			this->efSpellsTableLayout->RowStyles->Add((gcnew System::Windows::Forms::RowStyle(System::Windows::Forms::SizeType::Absolute,
+				178)));
+			this->efSpellsTableLayout->RowStyles->Add((gcnew System::Windows::Forms::RowStyle(System::Windows::Forms::SizeType::Absolute,
+				20)));
+			this->efSpellsTableLayout->Size = System::Drawing::Size(485, 198);
+			this->efSpellsTableLayout->TabIndex = 16;
+			// 
+			// efSpellsListBox
+			// 
+			this->efSpellsTableLayout->SetColumnSpan(this->efSpellsListBox, 5);
+			this->efSpellsListBox->Dock = System::Windows::Forms::DockStyle::Fill;
+			this->efSpellsListBox->FormattingEnabled = true;
+			this->efSpellsListBox->Location = System::Drawing::Point(3, 38);
+			this->efSpellsListBox->Name = L"efSpellsListBox";
+			this->efSpellsListBox->Size = System::Drawing::Size(479, 172);
+			this->efSpellsListBox->TabIndex = 16;
+			// 
+			// efSpellsTextBox
+			// 
+			this->efSpellsTextBox->Anchor = static_cast<System::Windows::Forms::AnchorStyles>((System::Windows::Forms::AnchorStyles::Bottom | System::Windows::Forms::AnchorStyles::Left));
+			this->efSpellsTextBox->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Regular,
+				System::Drawing::GraphicsUnit::Point, static_cast<System::Byte>(0)));
+			this->efSpellsTextBox->Location = System::Drawing::Point(76, 3);
+			this->efSpellsTextBox->Name = L"efSpellsTextBox";
+			this->efSpellsTextBox->Size = System::Drawing::Size(146, 29);
+			this->efSpellsTextBox->TabIndex = 24;
+			// 
+			// label1
+			// 
+			this->label1->Anchor = static_cast<System::Windows::Forms::AnchorStyles>((System::Windows::Forms::AnchorStyles::Bottom | System::Windows::Forms::AnchorStyles::Left));
+			this->label1->AutoSize = true;
+			this->label1->Font = (gcnew System::Drawing::Font(L"Segoe UI", 15.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->label1->Location = System::Drawing::Point(3, 2);
+			this->label1->Name = L"label1";
+			this->label1->Padding = System::Windows::Forms::Padding(0, 0, 0, 3);
+			this->label1->Size = System::Drawing::Size(66, 33);
+			this->label1->TabIndex = 15;
+			this->label1->Text = L"Spells";
+			// 
+			// efSpellsAddButton
+			// 
+			this->efSpellsAddButton->Anchor = static_cast<System::Windows::Forms::AnchorStyles>((System::Windows::Forms::AnchorStyles::Bottom | System::Windows::Forms::AnchorStyles::Left));
+			this->efSpellsAddButton->Location = System::Drawing::Point(286, 3);
+			this->efSpellsAddButton->Name = L"efSpellsAddButton";
+			this->efSpellsAddButton->Size = System::Drawing::Size(94, 29);
+			this->efSpellsAddButton->TabIndex = 25;
+			this->efSpellsAddButton->Text = L"Add Spell";
+			this->efSpellsAddButton->UseVisualStyleBackColor = true;
+			this->efSpellsAddButton->Click += gcnew System::EventHandler(this, &EditorForm::efSpellsAddButton_Click);
+			// 
+			// efSpellsRemoveButton
+			// 
+			this->efSpellsRemoveButton->Anchor = static_cast<System::Windows::Forms::AnchorStyles>((System::Windows::Forms::AnchorStyles::Bottom | System::Windows::Forms::AnchorStyles::Left));
+			this->efSpellsRemoveButton->Location = System::Drawing::Point(386, 3);
+			this->efSpellsRemoveButton->Name = L"efSpellsRemoveButton";
+			this->efSpellsRemoveButton->Size = System::Drawing::Size(94, 29);
+			this->efSpellsRemoveButton->TabIndex = 26;
+			this->efSpellsRemoveButton->Text = L"Remove Last";
+			this->efSpellsRemoveButton->UseVisualStyleBackColor = true;
+			this->efSpellsRemoveButton->Click += gcnew System::EventHandler(this, &EditorForm::efSpellsRemoveButton_Click);
+			// 
+			// efSpellsNumUpDown
+			// 
+			this->efSpellsNumUpDown->Anchor = static_cast<System::Windows::Forms::AnchorStyles>(((System::Windows::Forms::AnchorStyles::Bottom | System::Windows::Forms::AnchorStyles::Left)
+				| System::Windows::Forms::AnchorStyles::Right));
+			this->efSpellsNumUpDown->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Regular,
+				System::Drawing::GraphicsUnit::Point, static_cast<System::Byte>(0)));
+			this->efSpellsNumUpDown->Location = System::Drawing::Point(228, 3);
+			this->efSpellsNumUpDown->Name = L"efSpellsNumUpDown";
+			this->efSpellsNumUpDown->Size = System::Drawing::Size(52, 29);
+			this->efSpellsNumUpDown->TabIndex = 27;
 			// 
 			// efTabPage4
 			// 
@@ -1445,98 +1752,6 @@ namespace NPCSheet {
 			this->efCancelButton->UseVisualStyleBackColor = true;
 			this->efCancelButton->Click += gcnew System::EventHandler(this, &EditorForm::efCancelButton_Click);
 			// 
-			// label1
-			// 
-			this->label1->Anchor = static_cast<System::Windows::Forms::AnchorStyles>((System::Windows::Forms::AnchorStyles::Bottom | System::Windows::Forms::AnchorStyles::Left));
-			this->label1->AutoSize = true;
-			this->label1->Font = (gcnew System::Drawing::Font(L"Segoe UI", 15.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
-				static_cast<System::Byte>(0)));
-			this->label1->Location = System::Drawing::Point(3, 2);
-			this->label1->Name = L"label1";
-			this->label1->Padding = System::Windows::Forms::Padding(0, 0, 0, 3);
-			this->label1->Size = System::Drawing::Size(66, 33);
-			this->label1->TabIndex = 15;
-			this->label1->Text = L"Spells";
-			// 
-			// tableLayoutPanel2
-			// 
-			this->tableLayoutPanel2->ColumnCount = 5;
-			this->tableLayoutPanel2->ColumnStyles->Add((gcnew System::Windows::Forms::ColumnStyle(System::Windows::Forms::SizeType::Absolute,
-				73)));
-			this->tableLayoutPanel2->ColumnStyles->Add((gcnew System::Windows::Forms::ColumnStyle(System::Windows::Forms::SizeType::Absolute,
-				152)));
-			this->tableLayoutPanel2->ColumnStyles->Add((gcnew System::Windows::Forms::ColumnStyle(System::Windows::Forms::SizeType::Absolute,
-				58)));
-			this->tableLayoutPanel2->ColumnStyles->Add((gcnew System::Windows::Forms::ColumnStyle(System::Windows::Forms::SizeType::Absolute,
-				100)));
-			this->tableLayoutPanel2->ColumnStyles->Add((gcnew System::Windows::Forms::ColumnStyle(System::Windows::Forms::SizeType::Absolute,
-				100)));
-			this->tableLayoutPanel2->Controls->Add(this->efSpellsListBox, 0, 1);
-			this->tableLayoutPanel2->Controls->Add(this->textBox1, 1, 0);
-			this->tableLayoutPanel2->Controls->Add(this->label1, 0, 0);
-			this->tableLayoutPanel2->Controls->Add(this->efSpellsAddButton, 3, 0);
-			this->tableLayoutPanel2->Controls->Add(this->efSpellsRemoveButton, 4, 0);
-			this->tableLayoutPanel2->Controls->Add(this->efSpellsNumUpDown, 2, 0);
-			this->tableLayoutPanel2->Location = System::Drawing::Point(-1, 348);
-			this->tableLayoutPanel2->Name = L"tableLayoutPanel2";
-			this->tableLayoutPanel2->RowCount = 2;
-			this->tableLayoutPanel2->RowStyles->Add((gcnew System::Windows::Forms::RowStyle(System::Windows::Forms::SizeType::Absolute, 35)));
-			this->tableLayoutPanel2->RowStyles->Add((gcnew System::Windows::Forms::RowStyle(System::Windows::Forms::SizeType::Absolute, 178)));
-			this->tableLayoutPanel2->RowStyles->Add((gcnew System::Windows::Forms::RowStyle(System::Windows::Forms::SizeType::Absolute, 20)));
-			this->tableLayoutPanel2->Size = System::Drawing::Size(485, 198);
-			this->tableLayoutPanel2->TabIndex = 16;
-			// 
-			// efSpellsListBox
-			// 
-			this->tableLayoutPanel2->SetColumnSpan(this->efSpellsListBox, 5);
-			this->efSpellsListBox->Dock = System::Windows::Forms::DockStyle::Fill;
-			this->efSpellsListBox->FormattingEnabled = true;
-			this->efSpellsListBox->Location = System::Drawing::Point(3, 38);
-			this->efSpellsListBox->Name = L"efSpellsListBox";
-			this->efSpellsListBox->Size = System::Drawing::Size(479, 172);
-			this->efSpellsListBox->TabIndex = 16;
-			// 
-			// textBox1
-			// 
-			this->textBox1->Anchor = static_cast<System::Windows::Forms::AnchorStyles>((System::Windows::Forms::AnchorStyles::Bottom | System::Windows::Forms::AnchorStyles::Left));
-			this->textBox1->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
-				static_cast<System::Byte>(0)));
-			this->textBox1->Location = System::Drawing::Point(76, 3);
-			this->textBox1->Name = L"textBox1";
-			this->textBox1->Size = System::Drawing::Size(146, 29);
-			this->textBox1->TabIndex = 24;
-			// 
-			// efSpellsAddButton
-			// 
-			this->efSpellsAddButton->Anchor = static_cast<System::Windows::Forms::AnchorStyles>((System::Windows::Forms::AnchorStyles::Bottom | System::Windows::Forms::AnchorStyles::Left));
-			this->efSpellsAddButton->Location = System::Drawing::Point(286, 3);
-			this->efSpellsAddButton->Name = L"efSpellsAddButton";
-			this->efSpellsAddButton->Size = System::Drawing::Size(94, 29);
-			this->efSpellsAddButton->TabIndex = 25;
-			this->efSpellsAddButton->Text = L"Add";
-			this->efSpellsAddButton->UseVisualStyleBackColor = true;
-			// 
-			// efSpellsRemoveButton
-			// 
-			this->efSpellsRemoveButton->Anchor = static_cast<System::Windows::Forms::AnchorStyles>((System::Windows::Forms::AnchorStyles::Bottom | System::Windows::Forms::AnchorStyles::Left));
-			this->efSpellsRemoveButton->Location = System::Drawing::Point(386, 3);
-			this->efSpellsRemoveButton->Name = L"efSpellsRemoveButton";
-			this->efSpellsRemoveButton->Size = System::Drawing::Size(94, 29);
-			this->efSpellsRemoveButton->TabIndex = 26;
-			this->efSpellsRemoveButton->Text = L"Remove Last";
-			this->efSpellsRemoveButton->UseVisualStyleBackColor = true;
-			// 
-			// efSpellsNumUpDown
-			// 
-			this->efSpellsNumUpDown->Anchor = static_cast<System::Windows::Forms::AnchorStyles>(((System::Windows::Forms::AnchorStyles::Bottom | System::Windows::Forms::AnchorStyles::Left)
-				| System::Windows::Forms::AnchorStyles::Right));
-			this->efSpellsNumUpDown->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Regular,
-				System::Drawing::GraphicsUnit::Point, static_cast<System::Byte>(0)));
-			this->efSpellsNumUpDown->Location = System::Drawing::Point(228, 3);
-			this->efSpellsNumUpDown->Name = L"efSpellsNumUpDown";
-			this->efSpellsNumUpDown->Size = System::Drawing::Size(52, 29);
-			this->efSpellsNumUpDown->TabIndex = 27;
-			// 
 			// EditorForm
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
@@ -1576,13 +1791,14 @@ namespace NPCSheet {
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->efHPNumUpDown))->EndInit();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->efSPNumUpDown))->EndInit();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->efInitNumUpDown))->EndInit();
-			this->tableLayoutPanel1->ResumeLayout(false);
-			this->tableLayoutPanel1->PerformLayout();
+			this->efSavesSkillsTableLayout->ResumeLayout(false);
+			this->efSavesSkillsTableLayout->PerformLayout();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->efSkillsNumUpDown))->EndInit();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->efSavesNumUpDown))->EndInit();
 			this->efTabPage3->ResumeLayout(false);
-			this->tableLayoutPanel2->ResumeLayout(false);
-			this->tableLayoutPanel2->PerformLayout();
+			this->efTabPage3->PerformLayout();
+			this->efSpellsTableLayout->ResumeLayout(false);
+			this->efSpellsTableLayout->PerformLayout();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->efSpellsNumUpDown))->EndInit();
 			this->ResumeLayout(false);
 
@@ -1601,5 +1817,13 @@ namespace NPCSheet {
 	private: System::Void efSavesDeleteButton_Click(System::Object^ sender, System::EventArgs^ e);
 	private: System::Void efSkillsAddButton_Click(System::Object^ sender, System::EventArgs^ e);
 	private: System::Void efSkillsDeleteButton_Click(System::Object^ sender, System::EventArgs^ e);
+	private: System::Void efActionAddButton_Click(System::Object^ sender, System::EventArgs^ e);
+	private: System::Void efWeaponCreatorButton_Click(System::Object^ sender, System::EventArgs^ e);
+	private: System::Void efViewWeapButton_Click(System::Object^ sender, System::EventArgs^ e);
+	private: System::Void efDeleteWeapButton_Click(System::Object^ sender, System::EventArgs^ e);
+	private: System::Void efViewButton_Click(System::Object^ sender, System::EventArgs^ e);
+	private: System::Void efActionDeleteButton_Click(System::Object^ sender, System::EventArgs^ e);
+	private: System::Void efSpellsAddButton_Click(System::Object^ sender, System::EventArgs^ e);
+	private: System::Void efSpellsRemoveButton_Click(System::Object^ sender, System::EventArgs^ e);
 };
 }

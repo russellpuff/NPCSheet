@@ -6,14 +6,16 @@ namespace NSNPC {
 	using namespace cliext;
 
 	public ref struct Weapon {
-		String^ wpName = "";
-		int atkBonus = 0;
-		String^ dmgA = "";
-		String^ typeA = "";
-		String^ dmgB = "";
-		String^ typeB = "";
+		String^ wpName;
+		int atkBonus;
+		String^ dmgA;
+		String^ typeA;
+		String^ dmgB;
+		String^ typeB;
+		String^ range;
 
-		Weapon() {}
+		Weapon(String^ n, int a, String^ da, String^ ta, String^ db, String^ tb, String^ r)
+			: wpName(n), atkBonus(a), dmgA(da), typeA(ta), dmgB(db), typeB(tb), range(r) {}
 		~Weapon() {}
 		Weapon^ operator=(const Weapon% other) {
 			wpName = other.wpName;

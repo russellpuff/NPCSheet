@@ -124,6 +124,7 @@
   <ItemGroup>
     <ClCompile Include="NPCSheet.cpp" />
     <ClCompile Include="FormsDefs.cpp" />
+    <ClCompile Include="WeaponForm.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CoreForm.h">
@@ -133,6 +134,9 @@
     <ClInclude Include="EditorForm.h">
       <FileType>CppForm</FileType>
     </ClInclude>
+    <ClInclude Include="WeaponForm.h">
+      <FileType>CppForm</FileType>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="CoreForm.resx">
@@ -140,6 +144,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="EditorForm.resx">
       <DependentUpon>EditorForm.h</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WeaponForm.resx">
+      <DependentUpon>WeaponForm.h</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
