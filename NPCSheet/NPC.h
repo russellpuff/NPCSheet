@@ -39,6 +39,7 @@ namespace NSNPC {
 		String^ tacticsMorale = "";
 		String^ personality = "";
 		String^ appearance = "";
+		String^ goalsMotives = "";
 		int initBonus = 0;
 		int hp = 0; // hit points
 		int sp = 0; // (optional) stamina points
@@ -54,7 +55,6 @@ namespace NSNPC {
 		List<String^>^ bonds;
 		List<String^>^ flaws;
 		List<String^>^ ideals;
-		List<String^>^ goalsMotives;
 		List<String^>^ items;
 		List<int>^ skillVal;
 		List<int>^ savesVal;
@@ -79,7 +79,6 @@ namespace NSNPC {
 			bonds = gcnew List<String^>();
 			flaws = gcnew List<String^>();
 			ideals = gcnew List<String^>();
-			goalsMotives = gcnew List<String^>();
 			items = gcnew List<String^>();
 			skillVal = gcnew List<int>();
 			savesVal = gcnew List<int>();
