@@ -1231,24 +1231,21 @@ namespace NPCSheet {
 		if (ind > -1) {
 			for (int i = 0; i <= ind; ++i) { UpdateWeaponsListBox(i); }
 		}
-		// Big brain time
+		String^ s;
 		int skind = n->skillDesc->Count - 1;
 		if (skind > -1) {
 			for (int j = 0; j <= skind; ++j) {
-				efSkillsTextBox->Text = n->skillDesc[j];
-				efSkillsNumUpDown->Value = n->skillVal[j];
-				efSkillsAddButton_Click(NULL, EventArgs::Empty); 
+				s = Listerizer(n->skillDesc[j], n->skillVal[j]);
+				efSkillsListBox->Items->Add(s);
 			}
 		}
 		int saind = n->savesDesc->Count - 1;
 		if (saind > -1) {
 			for (int k = 0; k <= saind; ++k) {
-				efSavesTextBox->Text = n->savesDesc[k];
-				efSavesNumUpDown->Value = n->savesVal[k];
-				efSavesAddButton_Click(NULL, EventArgs::Empty);
+				s = Listerizer(n->savesDesc[k], n->savesVal[k]);
+				efSavesListBox->Items->Add(s);
 			}
 		}
-		// End big brain region.
 		for each (String^ a in n->actionsName) { efActionListBox->Items->Add(a); }
 		for each (String^ t in n->traitsName) { efTraitsListBox->Items->Add(t); }
 		for each (String^ b in n->bonds) { efBondsListBox->Items->Add(b); }
