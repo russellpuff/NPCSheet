@@ -5,6 +5,12 @@
 #include <random> 
 
 namespace NPCSheet {
+	// I'm acutely aware that BinarySerializer is obsolete. 
+	// However, Soap doesn't support generic List<T> serialization, which this application relies heavily on.
+	// JSON isn't natively supported in this version of C++/CLI and getting random unreliable external .dlls to work is agonizing.
+	// XML serializer keeps throwing NullReferenceExceptions on GetType() when I try to tell the serializer what an NPC object is.
+	// Therefore, Binary wins.
+	using namespace System::Runtime::Serialization::Formatters::Binary;
 
 	typedef std::mt19937 MyRNG;
 	uint32_t seed_val = time(NULL);
@@ -54,18 +60,56 @@ namespace NPCSheet {
 
 	// Clicking the Edit button on the core form.
 	System::Void CoreForm::cfEditButton_Click(System::Object^ sender, System::EventArgs^ e) {
-		if (cfDataGrid->CurrentCell->RowIndex != -1) {
-
+		int idx = cfDataGrid->CurrentCell->RowIndex;
+		if (idx != -1) {
+			EditorForm e(NPCs[idx]);
+			this->Hide();
+			e.ShowDialog();
+			this->Show();
+			if (e.DialogResult == System::Windows::Forms::DialogResult::OK) {
+				NPCs[idx] = e.retNPC();
+				int idx = NPCs->Count - 1;
+				cfDataGrid->Rows[idx]->Cells["cfDataGridNameColumn"]->Value = NPCs[idx]->name;
+				cfDataGrid->Rows[idx]->Cells["cfDataGridAlignColumn"]->Value = NPCs[idx]->alignment;
+				cfDataGrid->Rows[idx]->Cells["cfDataGridRaceColumn"]->Value = NPCs[idx]->race;
+				cfDataGrid->ClearSelection();
+			}
 		}
 	}
 
 	// Clicking the Save button on the core form.
 	System::Void CoreForm::cfSaveButton_Click(System::Object^ sender, System::EventArgs^ e) {
-		// save to file
+		try {
+			BinaryFormatter^ cereal = gcnew BinaryFormatter();
+			SaveFileDialog^ sfd = gcnew SaveFileDialog();
+			sfd->Filter = "NPC Pack File|*.npcs";
+			sfd->Title = "Save NPC Pack file";
+			if (sfd->ShowDialog() == System::Windows::Forms::DialogResult::OK) {
+				System::IO::FileStream^ file = System::IO::File::Create(sfd->FileName);
+				cereal->Serialize(file, NPCs);
+				file->Close();
+			}
+		}
+		catch (...) {
+			MessageBox::Show("Save file error.", "Error", MessageBoxButtons::OK, MessageBoxIcon::Warning);
+		}
 	}
 
 	System::Void CoreForm::cfLoadButton_Click(System::Object^ sender, System::EventArgs^ e) {
-		// Load from file
+		try {
+			BinaryFormatter^ cereal = gcnew BinaryFormatter();
+			OpenFileDialog^ ofd = gcnew OpenFileDialog();
+			ofd->Filter = "NPC Pack File|*.npcs";
+			ofd->Title = "Open NPC Pack file";
+			if (ofd->ShowDialog() == System::Windows::Forms::DialogResult::OK) {
+				System::IO::FileStream^ file = System::IO::File::Open(ofd->FileName, System::IO::FileMode::Open);
+				NPCs = (List<NPC^>^) cereal->Deserialize(file);
+				cfDataGrid->Refresh();
+			}
+		}
+		catch (...) {
+			MessageBox::Show("Load file error.", "Error", MessageBoxButtons::OK, MessageBoxIcon::Warning);
+		}
 	}
 
 	// Event that triggers when the core form attempts to close. 
@@ -89,7 +133,7 @@ namespace NPCSheet {
 	// Event that triggers when the editor form attempts to close.
 	System::Void EditorForm::EditorForm_FormClosing(System::Object^ sender, System::Windows::Forms::FormClosingEventArgs^ e) {
 		if (efUnsaved) {
-			String^ message = "You have unsaved changes to your NPC.\nDO you really want to exit?";
+			String^ message = "You have unsaved changes to your NPC.\nDo you really want to exit?";
 			auto result = MessageBox::Show(message, "Editor", MessageBoxButtons::YesNo, MessageBoxIcon::Warning);
 			if (result == System::Windows::Forms::DialogResult::No) {
 				e->Cancel = true;
@@ -108,10 +152,7 @@ namespace NPCSheet {
 		array<TextBox^>^ statTextBoxes = gcnew array<TextBox^>{
 			efStat1TextBox, efStat2TextBox, efStat3TextBox, efStat4TextBox, efStat5TextBox, efStat6TextBox
 		};
-		// Sets defaults to these six ability scores and locks editing. 
-		array<String^>^ tradAtts = gcnew array<String^>{
-			"Strength", "Dexterity", "Constitution", "Intelligence", "Wisdom", "Charisma"
-		};
+		// Sets defaults to tradAtts ability scores and locks editing. 
 		if (efStatsCheckBox->Checked == true) {
 			for (int i = 0; i <= 5; ++i) {
 				statTextBoxes[i]->Text = tradAtts[i];
@@ -326,6 +367,8 @@ namespace NPCSheet {
 			efUnsaved = true;
 			int idx = Decimal::ToInt32(efSpellsNumUpDown->Value);
 			n->spells[idx]->Add(efSpellsTextBox->Text);
+			efSpellsTextBox->Clear();
+			efSpellsNumUpDown->Value = 0;
 			DisplaySpellsInListBox();
 		}
 		else { Media::SystemSounds::Exclamation->Play(); }
@@ -379,7 +422,7 @@ namespace NPCSheet {
 			if (wfUseCheckBox->Checked) {
 				if (wfDamage2ComboBox->SelectedIndex != 0) { amod3 = mods[(wfDamage2ComboBox->SelectedIndex) - 1]; }
 				cmod = 0;
-				wdmg2 = Convert::ToString(wfDmg2NumUpDown->Value) + wfDmgDice2ComboBox->Text;
+				wdmg2 = Convert::ToString(wfDice2NumUpDown->Value) + wfDmgDice2ComboBox->Text;
 				cmod = amod3 + Decimal::ToInt32(wfDmg2NumUpDown->Value);
 				if (cmod > -1) { wdmg2 += "+"; }
 				wdmg2 += Convert::ToString(cmod);
@@ -583,11 +626,10 @@ namespace NPCSheet {
 			array<String^>^ lan = efLanguagesTextBox->Text->Split('\n');
 			for each (String ^ l in lan) { n->languages->Add(l); }
 			array<String^>^ add = efAddlStatsTextBox->Text->Split('\n');
-			for each (String ^ a in add) { n->languages->Add(a); }
-			for each (auto item in efItemsListBox->Items) {n->items->Add(item->ToString());}
+			for each (String ^ a in add) { n->addnlStatistics->Add(a); }
 			n->defenseDesc[0] = efDef1TextBox->Text;
 			n->defenseDesc[1] = efDef2TextBox->Text;
-			n->defenseDesc[2] = efDef2TextBox->Text;
+			n->defenseDesc[2] = efDef3TextBox->Text;
 			n->statDesc[0] = efStat1TextBox->Text;
 			n->statDesc[1] = efStat2TextBox->Text;
 			n->statDesc[2] = efStat3TextBox->Text;
@@ -743,4 +785,113 @@ namespace NPCSheet {
 			efRaceComboBox->BackColor = System::Drawing::SystemColors::Window;
 		}
 	}
+
+	// Loader stuff. Should be self explanatory, just putting things where they belong. 
+	System::Void EditorForm::LoadMyNPC() {
+		DisplaySpellsInListBox();
+		efNameTextBox->Text = n->name;
+		efRaceTextBox->Text = n->race;
+		efRaceComboBox->Text = n->raceName;
+		efAlignmentTextBox->Text = n->alignment;
+		efTypeTextBox->Text = n->creatureType;
+		efTSocTextBox->Text = n->tacticsSocial;
+		efTComTextBox->Text = n->tacticsCombat;
+		efTMorTextBox->Text = n->tacticsMorale;
+		efPersoTextBox->Text = n->personality;
+		efAppearTextBox->Text = n->appearance;
+		efGoalMotTextBox->Text = n->goalsMotives;
+		efInitNumUpDown->Value = n->initBonus;
+		efHPNumUpDown->Value = n->hp;
+		efSPNumUpDown->Value = n->sp;
+		String^ tag;
+		if (n->ctTag->Length > 0) { tag = n->ctTag->Substring(1, n->ctTag->Length - 2); }// Remove embedded parenthesis.
+		efTagTextBox->Text = tag;
+		if (n->sp == 0) { efStaminaCheckBox->Checked = false; }
+		String^ sen;
+		for each (String ^ s in n->senses) {
+			sen += s;
+			sen += "\n";
+		}
+		efSensesTextBox->Text = sen;
+		String^ lan;
+		for each (String ^ l in n->languages) {
+			lan += l;
+			lan += "\n";
+		}
+		efLanguagesTextBox->Text = lan;
+		String^ add;
+		for each (String ^ a in n->addnlStatistics) {
+			add += a;
+			add += "\n";
+		}
+		efAddlStatsTextBox->Text = add;
+		efDef1TextBox->Text = n->defenseDesc[0];
+		efDef1NumUpDown->Value = n->defenseVal[0];
+		if (!String::IsNullOrEmpty(n->defenseDesc[1])) {
+			efDef2TextBox->Text = n->defenseDesc[1];
+			efDef2NumUpDown->Value = n->defenseVal[1];
+			efDef2UseCheckBox->Checked = true;
+		}
+		if (!String::IsNullOrEmpty(n->defenseDesc[2])) {
+			efDef3TextBox->Text = n->defenseDesc[2];
+			efDef3NumUpDown->Value = n->defenseVal[2];
+			efDef3UseCheckBox->Checked = true;
+		}
+		efStat1TextBox->Text = n->statDesc[0];
+		efStat2TextBox->Text = n->statDesc[1];
+		efStat3TextBox->Text = n->statDesc[2];
+		efStat4TextBox->Text = n->statDesc[3];
+		efStat5TextBox->Text = n->statDesc[4];
+		efStat6TextBox->Text = n->statDesc[5];
+		efStat1NumUpDown->Value = n->statVal[0];
+		efStat2NumUpDown->Value = n->statVal[1];
+		efStat3NumUpDown->Value = n->statVal[2];
+		efStat4NumUpDown->Value = n->statVal[3];
+		efStat5NumUpDown->Value = n->statVal[4];
+		efStat6NumUpDown->Value = n->statVal[5];
+		int ind = n->weapons->Count - 1;
+		if (ind > -1) {
+			for (int i = 0; i <= ind; ++i) { UpdateWeaponsListBox(i); }
+		}
+		// Big brain time
+		int skind = n->skillDesc->Count - 1;
+		if (skind > -1) {
+			for (int j = 0; j <= skind; ++j) {
+				efSkillsTextBox->Text = n->skillDesc[j];
+				efSkillsNumUpDown->Value = n->skillVal[j];
+				efSkillsAddButton_Click(NULL, EventArgs::Empty); 
+			}
+		}
+		int saind = n->savesDesc->Count - 1;
+		if (saind > -1) {
+			for (int k = 0; k <= saind; ++k) {
+				efSavesTextBox->Text = n->savesDesc[k];
+				efSavesNumUpDown->Value = n->savesVal[k];
+				efSavesAddButton_Click(NULL, EventArgs::Empty);
+			}
+		}
+		// End big brain region.
+		for each (String^ a in n->actionsName) { efActionListBox->Items->Add(a); }
+		for each (String^ t in n->traitsName) { efTraitsListBox->Items->Add(t); }
+		for each (String^ b in n->bonds) { efBondsListBox->Items->Add(b); }
+		for each (String^ d in n->ideals) { efIdealsListBox->Items->Add(d);}
+		for each (String^ f in n->flaws) { efFlawsListBox->Items->Add(f); }
+		for each (String^ m in n->items) { efItemsListBox->Items->Add(m); }
+	}
+
+	System::Void CoreForm::DataGridRowUpdate() {
+		cfEditButton->Enabled = (cfDataGrid->Rows->Count > 0);
+		cfSaveButton->Enabled = (cfDataGrid->Rows->Count > 0);
+	}
+
+	// Can't mix event args for these events. Annyoing. 
+	System::Void CoreForm::cfDataGrid_RowsAdded(System::Object^ sender, System::Windows::Forms::DataGridViewRowsAddedEventArgs^ e) {
+		DataGridRowUpdate();
+	}
+
+	
+	System::Void CoreForm::cfDataGrid_RowsRemoved(System::Object^ sender, System::Windows::Forms::DataGridViewRowsRemovedEventArgs^ e) {
+		DataGridRowUpdate();
+	}
+	// Annoyances stop here.
 }

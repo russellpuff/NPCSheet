@@ -201,6 +201,8 @@ namespace NPCSheet {
 			this->cfDataGrid->Size = System::Drawing::Size(294, 381);
 			this->cfDataGrid->TabIndex = 9;
 			this->cfDataGrid->TabStop = false;
+			this->cfDataGrid->RowsAdded += gcnew System::Windows::Forms::DataGridViewRowsAddedEventHandler(this, &CoreForm::cfDataGrid_RowsAdded);
+			this->cfDataGrid->RowsRemoved += gcnew System::Windows::Forms::DataGridViewRowsRemovedEventHandler(this, &CoreForm::cfDataGrid_RowsRemoved);
 			// 
 			// cfDataGridNameColumn
 			// 
@@ -294,6 +296,9 @@ namespace NPCSheet {
 	private: System::Void cfSaveButton_Click(System::Object^ sender, System::EventArgs^ e);
 	private: System::Void cfLoadButton_Click(System::Object^ sender, System::EventArgs^ e);
 	private: System::Void CoreForm_FormClosing(System::Object^ sender, System::Windows::Forms::FormClosingEventArgs^ e);
+	private: System::Void cfDataGrid_RowsRemoved(System::Object^ sender, System::Windows::Forms::DataGridViewRowsRemovedEventArgs^ e);
+	private: System::Void cfDataGrid_RowsAdded(System::Object^ sender, System::Windows::Forms::DataGridViewRowsAddedEventArgs^ e);
+	private: System::Void DataGridRowUpdate();
 };
 }
 #pragma endregion
