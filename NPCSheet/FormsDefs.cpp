@@ -15,6 +15,7 @@ namespace NPCSheet {
 		return Decimal::ToInt32(s);
 	}
 
+	// Converts a Skill and its bonus to a special format for use in ListBox.
 	String^ Listerizer(String^ s, Decimal d) {
 		int i = Decimal::ToInt32(d);
 		if (i > 0) { s += " +"; }
@@ -76,7 +77,7 @@ namespace NPCSheet {
 
 	// Event that triggers when the editor form loads.
 	System::Void EditorForm::EditorForm_Load(System::Object^ sender, System::EventArgs^ e) {
-		efTabControl_SelectedIndexChanged(NULL, EventArgs::Empty);
+		//efTabControl_SelectedIndexChanged(NULL, EventArgs::Empty);
 		DisplaySpellsInListBox();
 		rng.seed(seed_val); // initialize rng
 	}
@@ -98,16 +99,18 @@ namespace NPCSheet {
 		this->Close();
 	} 
 
+	/*
 	// When something changes which tab the editor form is focused on.
+	// This was supposed to dynamically change the size of the form to match each tab, but it's currently unused!
 	System::Void EditorForm::efTabControl_SelectedIndexChanged(System::Object^ sender, System::EventArgs^ e) {
 		switch (efTabControl->SelectedIndex) {
 		case 0:
-			//efTableLayout->Width = 482;
-			//this->Width = 518;
+			//efTableLayout->Width = ;
+			//this->Width = ;
 			break;
 		case 1:
-			//efTableLayout->Width = 957;
-			//this->Width = 985;
+			//efTableLayout->Width = ;
+			//this->Width = ;
 			break;
 		case 2:
 			break;
@@ -120,13 +123,14 @@ namespace NPCSheet {
 			MessageBox::Show(message, "Editor", MessageBoxButtons::OK, MessageBoxIcon::Information);
 			break;
 		}
-	}
+	}*/
 
 	// When the checkbox next to "Use Traditional?" is checked in the editor form.
 	System::Void EditorForm::efStatsCheckBox_CheckedChanged(System::Object^ sender, System::EventArgs^ e) {
 		array<TextBox^>^ statTextBoxes = gcnew array<TextBox^>{
 			efStat1TextBox, efStat2TextBox, efStat3TextBox, efStat4TextBox, efStat5TextBox, efStat6TextBox
 		};
+		// Sets defaults to these six ability scores and locks editing. 
 		array<String^>^ tradAtts = gcnew array<String^>{
 			"Strength", "Dexterity", "Constitution", "Intelligence", "Wisdom", "Charisma"
 		};
@@ -146,6 +150,7 @@ namespace NPCSheet {
 
 	// Clicking the roll random button in the editor form. 
 	System::Void EditorForm::efRandomStatsButton_Click(System::Object^ sender, System::EventArgs^ e) {
+		// Segment rolls 4d6, then drops the lowest. It does this once per ability score. 
 		std::uniform_int_distribution<uint32_t> dist6(1, 6);
 		int dice[4] = { 0,0,0,0 };
 		int stats[6] = { 0,0,0,0,0,0 };
@@ -222,9 +227,10 @@ namespace NPCSheet {
 
 	// Clicking the Delete button in the Saves section of the editor form.
 	System::Void EditorForm::efSavesDeleteButton_Click(System::Object^ sender, System::EventArgs^ e) {
-		if (efSavesListBox->SelectedIndex > -1) {
-			n->savesDesc->RemoveAt(efSavesListBox->SelectedIndex);
-			n->savesVal->RemoveAt(efSavesListBox->SelectedIndex);
+		int idx = efSavesListBox->SelectedIndex;
+		if (idx > -1) {
+			n->savesDesc->RemoveAt(idx);
+			n->savesVal->RemoveAt(idx);
 			efSavesListBox->Items->Remove(efSavesListBox->SelectedItem);
 			efSavesListBox->Refresh();
 		}
@@ -270,6 +276,7 @@ namespace NPCSheet {
 		}
 	}
 
+	// Similar function to Listerizer() but for Weapons.
 	System::Void EditorForm::UpdateWeaponsListBox(int idx) {
 		String^ litem = n->weapons[idx]->wpName;
 		if (n->weapons[idx]->atkBonus > -1) { litem += " +"; }
@@ -349,6 +356,7 @@ namespace NPCSheet {
 		}
 	}
 
+	// A special function to display all known spells in the ListBox using the typical format used in statblocks. 
 	System::Void EditorForm::DisplaySpellsInListBox() {
 		efSpellsListBox->Items->Clear();
 		String^ litem;
@@ -357,7 +365,7 @@ namespace NPCSheet {
 			for each (String^ s in n->spells[i]) {
 				litem += s + ", ";
 			}
-			if (litem->Length > 3) { litem = litem->Substring(0, (litem->Length - 2)); }
+			if (litem->Length > 3) { litem = litem->Substring(0, (litem->Length - 2)); } // If last item, delete the comma and space.
 			efSpellsListBox->Items->Add(litem);
 		}
 		efSpellsListBox->Refresh();
@@ -367,14 +375,14 @@ namespace NPCSheet {
 	System::Void WeaponForm::wfSaveButton_Click(System::Object^ sender, System::EventArgs^ e) {
 		if (wfValidateSave()) {
 			String^ wname = wfNameTextBox->Text;
-			int amod1 = 0, amod2 = 0, amod3 = 0, cmod = 0;
-			if (wfAttackComboBox->SelectedIndex != 0) { amod1 = mods[(wfAttackComboBox->SelectedIndex)-1]; } // Add ability score mod if applicable.
-			int watk = Decimal::ToInt32(wfAttackNumUpDown->Value) + amod1;
+			int amod1 = 0, amod2 = 0, amod3 = 0, cmod = 0; // amod = ability mod, cmod = combined mod
+			if (wfAttackComboBox->SelectedIndex != 0) { amod1 = mods[(wfAttackComboBox->SelectedIndex)-1]; } // Add amod if applicable.
+			int watk = Decimal::ToInt32(wfAttackNumUpDown->Value) + amod1; // atk bonus is the specified value plus the first amod
 			
 			// Weapon damage 1.
 			if (wfDamage1ComboBox->SelectedIndex != 0) { amod2 = mods[(wfDamage1ComboBox->SelectedIndex) - 1]; }
 			String^ wdmg1 = Convert::ToString(wfDice1NumUpDown->Value) + wfDmgDice1ComboBox->Text;
-			cmod = amod2 + Decimal::ToInt32(wfDmg1NumUpDown->Value);
+			cmod = amod2 + Decimal::ToInt32(wfDmg1NumUpDown->Value); // first cmod is the specified value plus the second amod
 			if (cmod > -1) { wdmg1 += "+"; }
 			wdmg1 += Convert::ToString(cmod);
 			String^ wtype1 = wfType1TextBox->Text;
@@ -382,6 +390,7 @@ namespace NPCSheet {
 			// Weapon damage 2
 			String^ wdmg2 = "";
 			String^ wtype2 = "";
+			// Basically same shit if the use CheckBox is checked. otherwise the associated variables are blank and will be ignored. 
 			if (wfUseCheckBox->Checked) {
 				if (wfDamage2ComboBox->SelectedIndex != 0) { amod3 = mods[(wfDamage2ComboBox->SelectedIndex) - 1]; }
 				cmod = 0;
@@ -426,6 +435,63 @@ namespace NPCSheet {
 
 	}
 
+	// When the Add button in the Traits section is clikced on the editor form.
+	System::Void EditorForm::efAddTraitButton_Click(System::Object^ sender, System::EventArgs^ e) {
+		if (!String::IsNullOrEmpty(efTraitNameTextBox->Text) && !String::IsNullOrEmpty(efTraitDescTextBox->Text)) {
+			n->traitsName->Add(efTraitNameTextBox->Text);
+			n->traitsDesc->Add(efTraitDescTextBox->Text);
+			efTraitsListBox->Items->Add(efTraitNameTextBox->Text);
+			efTraitNameTextBox->Clear();
+			efTraitDescTextBox->Clear();
+			efTraitsListBox->Refresh();
+		} else { Media::SystemSounds::Exclamation->Play(); }
+	}
+	// When the View button in the Traits section is clicked on the editor form.
+	System::Void EditorForm::efViewTraitButton_Click(System::Object^ sender, System::EventArgs^ e) {
+		int idx = efTraitsListBox->SelectedIndex;
+		if (idx != -1) {
+			efTraitNameTextBox->Text = n->traitsName[idx];
+			efTraitDescTextBox->Text = n->traitsDesc[idx];
+		}
+	}
+
+	// When the Delete button in the Traits section is clicked on the editor form.
+	System::Void EditorForm::efDeleteTraitButton_Click(System::Object^ sender, System::EventArgs^ e) {
+		int idx = efTraitsListBox->SelectedIndex;
+		if (idx != -1) {
+			n->traitsName->RemoveAt(idx);
+			n->traitsDesc->RemoveAt(idx);
+			efTraitsListBox->Items->RemoveAt(idx);
+			efTraitsListBox->Refresh();
+		}
+	}
+
+	// When the Add item in the Items section is clicked on the editor form.
+	System::Void EditorForm::efItemAddButton_Click(System::Object^ sender, System::EventArgs^ e) {
+		if (!String::IsNullOrEmpty(efItemTextBox->Text)) {
+			String^ litem = efItemTextBox->Text;
+			litem += " (";
+			litem += Convert::ToString(efItemQtyNumUpDown->Value);
+			litem += ")";
+			efItemsListBox->Items->Add(litem);
+			efItemTextBox->Clear();
+			efItemQtyNumUpDown->Value = 1;
+			efItemsListBox->Refresh();
+			n->items->Add(litem);
+		}
+		else { Media::SystemSounds::Exclamation->Play(); }
+	}
+
+	// When the Delete button in the Items section is clicked on the editor form.
+	System::Void EditorForm::efItemDeleteButton_Click(System::Object^ sender, System::EventArgs^ e) {
+		int idx = efItemsListBox->SelectedIndex;
+		if (idx != -1) {
+			n->items->RemoveAt(idx);
+			efItemsListBox->Items->RemoveAt(idx);
+			efItemsListBox->Refresh();
+		}
+	}
+
 	NPC^ EditorForm::retNPC() {
 		return n;
 	}
@@ -434,6 +500,7 @@ namespace NPCSheet {
 		return wp;
 	}
 
+	// You can't save if certain required fields are blank. This checks for them.
 	bool WeaponForm::wfValidateSave() {
 		bool validate1, validate2, validate3, validate4 = true, validate5 = true;
 		validate1 = !String::IsNullOrEmpty(wfNameTextBox->Text);
