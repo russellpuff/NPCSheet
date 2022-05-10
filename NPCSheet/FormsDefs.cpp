@@ -92,6 +92,7 @@ namespace NPCSheet {
 				System::IO::FileStream^ file = System::IO::File::Create(sfd->FileName);
 				cereal->Serialize(file, NPCs);
 				file->Close();
+				cfUnsaved = false;
 			}
 		}
 		catch (...) {
@@ -626,10 +627,13 @@ namespace NPCSheet {
 			n->initBonus = Decimal::ToInt32(efInitNumUpDown->Value);
 			n->hp = Decimal::ToInt32(efHPNumUpDown->Value);
 			n->sp = Decimal::ToInt32(efSPNumUpDown->Value);
+			n->senses->Clear();
 			array<String^>^ sen = efSensesTextBox->Text->Split('\n');
 			for each (String ^ s in sen) { n->senses->Add(s); }
+			n->languages->Clear();
 			array<String^>^ lan = efLanguagesTextBox->Text->Split('\n');
 			for each (String ^ l in lan) { n->languages->Add(l); }
+			n->addnlStatistics->Clear();
 			array<String^>^ add = efAddlStatsTextBox->Text->Split('\n');
 			for each (String ^ a in add) { n->addnlStatistics->Add(a); }
 			n->defenseDesc[0] = efDef1TextBox->Text;
