@@ -204,6 +204,8 @@ private: System::Windows::Forms::TextBox^ efGoalMotTextBox;
 
 private: System::Windows::Forms::TextBox^ efAppearTextBox;
 private: System::Windows::Forms::TextBox^ efPersoTextBox;
+private: System::Windows::Forms::Label^ efAddlStatsLabel;
+private: System::Windows::Forms::TextBox^ efAddlStatsTextBox;
 
 
 
@@ -278,7 +280,7 @@ private: System::Windows::Forms::TextBox^ efPersoTextBox;
 			n = gcnew NPC();
 
 			efUnsaved = false;
-			efSaveButton->Enabled = false;
+			//efSaveButton->Enabled = false;
 			efNextButton->Visible = true;
 			efNextButton->Enabled = false;
 			efStatsCheckBox->Checked = true;
@@ -466,6 +468,13 @@ private: System::Windows::Forms::TextBox^ efPersoTextBox;
 			this->efItemTextBox = (gcnew System::Windows::Forms::TextBox());
 			this->efItemsListBox = (gcnew System::Windows::Forms::ListBox());
 			this->efTabPage5 = (gcnew System::Windows::Forms::TabPage());
+			this->tableLayoutPanel3 = (gcnew System::Windows::Forms::TableLayoutPanel());
+			this->efGoalMotTextBox = (gcnew System::Windows::Forms::TextBox());
+			this->efGoalsMotivesLabel = (gcnew System::Windows::Forms::Label());
+			this->efPersonalityLabel = (gcnew System::Windows::Forms::Label());
+			this->efAppearTextBox = (gcnew System::Windows::Forms::TextBox());
+			this->efPersoTextBox = (gcnew System::Windows::Forms::TextBox());
+			this->efAppearanceLabel = (gcnew System::Windows::Forms::Label());
 			this->tableLayoutPanel2 = (gcnew System::Windows::Forms::TableLayoutPanel());
 			this->efFlawsListBox = (gcnew System::Windows::Forms::ListBox());
 			this->efBondsListBox = (gcnew System::Windows::Forms::ListBox());
@@ -485,9 +494,6 @@ private: System::Windows::Forms::TextBox^ efPersoTextBox;
 			this->efIAddButton = (gcnew System::Windows::Forms::Button());
 			this->efIdealsListBox = (gcnew System::Windows::Forms::ListBox());
 			this->efFlawsLabel = (gcnew System::Windows::Forms::Label());
-			this->efGoalsMotivesLabel = (gcnew System::Windows::Forms::Label());
-			this->efPersonalityLabel = (gcnew System::Windows::Forms::Label());
-			this->efAppearanceLabel = (gcnew System::Windows::Forms::Label());
 			this->tableLayoutPanel1 = (gcnew System::Windows::Forms::TableLayoutPanel());
 			this->efTacticsLabel = (gcnew System::Windows::Forms::Label());
 			this->efTMorTextBox = (gcnew System::Windows::Forms::TextBox());
@@ -498,10 +504,8 @@ private: System::Windows::Forms::TextBox^ efPersoTextBox;
 			this->efTCombatLabel = (gcnew System::Windows::Forms::Label());
 			this->efSaveButton = (gcnew System::Windows::Forms::Button());
 			this->efCancelButton = (gcnew System::Windows::Forms::Button());
-			this->tableLayoutPanel3 = (gcnew System::Windows::Forms::TableLayoutPanel());
-			this->efAppearTextBox = (gcnew System::Windows::Forms::TextBox());
-			this->efPersoTextBox = (gcnew System::Windows::Forms::TextBox());
-			this->efGoalMotTextBox = (gcnew System::Windows::Forms::TextBox());
+			this->efAddlStatsLabel = (gcnew System::Windows::Forms::Label());
+			this->efAddlStatsTextBox = (gcnew System::Windows::Forms::TextBox());
 			this->efTabControl->SuspendLayout();
 			this->efTabPage1->SuspendLayout();
 			this->efCoreInfoTableLayout->SuspendLayout();
@@ -531,9 +535,9 @@ private: System::Windows::Forms::TextBox^ efPersoTextBox;
 			this->efTraitsTableLayout->SuspendLayout();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->efItemQtyNumUpDown))->BeginInit();
 			this->efTabPage5->SuspendLayout();
+			this->tableLayoutPanel3->SuspendLayout();
 			this->tableLayoutPanel2->SuspendLayout();
 			this->tableLayoutPanel1->SuspendLayout();
-			this->tableLayoutPanel3->SuspendLayout();
 			this->SuspendLayout();
 			// 
 			// efNextButton
@@ -545,6 +549,7 @@ private: System::Windows::Forms::TextBox^ efPersoTextBox;
 			this->efNextButton->TabIndex = 99;
 			this->efNextButton->Text = L"Next";
 			this->efNextButton->UseVisualStyleBackColor = true;
+			this->efNextButton->Click += gcnew System::EventHandler(this, &EditorForm::efNextButton_Click);
 			// 
 			// efTabControl
 			// 
@@ -594,9 +599,17 @@ private: System::Windows::Forms::TextBox^ efPersoTextBox;
 			this->efCoreInfoTableLayout->Controls->Add(this->efSensesTextBox, 1, 7);
 			this->efCoreInfoTableLayout->Controls->Add(this->efSensesLabel, 0, 8);
 			this->efCoreInfoTableLayout->Controls->Add(this->efRaceComboBox, 0, 1);
+			this->efCoreInfoTableLayout->Controls->Add(this->efAddlStatsLabel, 0, 11);
+			this->efCoreInfoTableLayout->Controls->Add(this->efAddlStatsTextBox, 1, 10);
 			this->efCoreInfoTableLayout->Location = System::Drawing::Point(6, 6);
 			this->efCoreInfoTableLayout->Name = L"efCoreInfoTableLayout";
-			this->efCoreInfoTableLayout->RowCount = 11;
+			this->efCoreInfoTableLayout->RowCount = 14;
+			this->efCoreInfoTableLayout->RowStyles->Add((gcnew System::Windows::Forms::RowStyle(System::Windows::Forms::SizeType::Absolute,
+				36)));
+			this->efCoreInfoTableLayout->RowStyles->Add((gcnew System::Windows::Forms::RowStyle(System::Windows::Forms::SizeType::Absolute,
+				36)));
+			this->efCoreInfoTableLayout->RowStyles->Add((gcnew System::Windows::Forms::RowStyle(System::Windows::Forms::SizeType::Absolute,
+				36)));
 			this->efCoreInfoTableLayout->RowStyles->Add((gcnew System::Windows::Forms::RowStyle(System::Windows::Forms::SizeType::Absolute,
 				36)));
 			this->efCoreInfoTableLayout->RowStyles->Add((gcnew System::Windows::Forms::RowStyle(System::Windows::Forms::SizeType::Absolute,
@@ -659,9 +672,11 @@ private: System::Windows::Forms::TextBox^ efPersoTextBox;
 			this->efRaceTextBox->Name = L"efRaceTextBox";
 			this->efRaceTextBox->Size = System::Drawing::Size(346, 31);
 			this->efRaceTextBox->TabIndex = 4;
+			this->efRaceTextBox->TextChanged += gcnew System::EventHandler(this, &EditorForm::ValidateUndoRed);
 			// 
 			// efNameTextBox
 			// 
+			this->efNameTextBox->BackColor = System::Drawing::SystemColors::Window;
 			this->efCoreInfoTableLayout->SetColumnSpan(this->efNameTextBox, 2);
 			this->efNameTextBox->Dock = System::Windows::Forms::DockStyle::Fill;
 			this->efNameTextBox->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 15.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
@@ -670,6 +685,7 @@ private: System::Windows::Forms::TextBox^ efPersoTextBox;
 			this->efNameTextBox->Name = L"efNameTextBox";
 			this->efNameTextBox->Size = System::Drawing::Size(346, 31);
 			this->efNameTextBox->TabIndex = 0;
+			this->efNameTextBox->TextChanged += gcnew System::EventHandler(this, &EditorForm::ValidateUndoRed);
 			// 
 			// efNameLabel
 			// 
@@ -704,6 +720,7 @@ private: System::Windows::Forms::TextBox^ efPersoTextBox;
 			this->efTypeTextBox->Name = L"efTypeTextBox";
 			this->efTypeTextBox->Size = System::Drawing::Size(168, 31);
 			this->efTypeTextBox->TabIndex = 8;
+			this->efTypeTextBox->TextChanged += gcnew System::EventHandler(this, &EditorForm::ValidateUndoRed);
 			// 
 			// efTagTextBox
 			// 
@@ -740,6 +757,7 @@ private: System::Windows::Forms::TextBox^ efPersoTextBox;
 			this->efLanguagesTextBox->ScrollBars = System::Windows::Forms::ScrollBars::Vertical;
 			this->efLanguagesTextBox->Size = System::Drawing::Size(346, 102);
 			this->efLanguagesTextBox->TabIndex = 11;
+			this->efLanguagesTextBox->TextChanged += gcnew System::EventHandler(this, &EditorForm::ValidateUndoRed);
 			// 
 			// efSensesTextBox
 			// 
@@ -753,6 +771,7 @@ private: System::Windows::Forms::TextBox^ efPersoTextBox;
 			this->efSensesTextBox->ScrollBars = System::Windows::Forms::ScrollBars::Vertical;
 			this->efSensesTextBox->Size = System::Drawing::Size(346, 102);
 			this->efSensesTextBox->TabIndex = 12;
+			this->efSensesTextBox->TextChanged += gcnew System::EventHandler(this, &EditorForm::ValidateUndoRed);
 			// 
 			// efSensesLabel
 			// 
@@ -777,6 +796,7 @@ private: System::Windows::Forms::TextBox^ efPersoTextBox;
 			this->efRaceComboBox->Name = L"efRaceComboBox";
 			this->efRaceComboBox->Size = System::Drawing::Size(114, 33);
 			this->efRaceComboBox->TabIndex = 14;
+			this->efRaceComboBox->SelectedIndexChanged += gcnew System::EventHandler(this, &EditorForm::efRaceComboBox_SelectedIndexChanged);
 			// 
 			// efTabPage2
 			// 
@@ -984,6 +1004,7 @@ private: System::Windows::Forms::TextBox^ efPersoTextBox;
 			this->efDef3TextBox->Name = L"efDef3TextBox";
 			this->efDef3TextBox->Size = System::Drawing::Size(69, 29);
 			this->efDef3TextBox->TabIndex = 25;
+			this->efDef3TextBox->TextChanged += gcnew System::EventHandler(this, &EditorForm::ValidateUndoRed);
 			// 
 			// efDef2TextBox
 			// 
@@ -993,6 +1014,7 @@ private: System::Windows::Forms::TextBox^ efPersoTextBox;
 			this->efDef2TextBox->Name = L"efDef2TextBox";
 			this->efDef2TextBox->Size = System::Drawing::Size(69, 29);
 			this->efDef2TextBox->TabIndex = 21;
+			this->efDef2TextBox->TextChanged += gcnew System::EventHandler(this, &EditorForm::ValidateUndoRed);
 			// 
 			// efDef1TextBox
 			// 
@@ -1004,6 +1026,7 @@ private: System::Windows::Forms::TextBox^ efPersoTextBox;
 			this->efDef1TextBox->Name = L"efDef1TextBox";
 			this->efDef1TextBox->Size = System::Drawing::Size(69, 31);
 			this->efDef1TextBox->TabIndex = 20;
+			this->efDef1TextBox->TextChanged += gcnew System::EventHandler(this, &EditorForm::ValidateUndoRed);
 			// 
 			// efDef2NumUpDown
 			// 
@@ -1290,6 +1313,7 @@ private: System::Windows::Forms::TextBox^ efPersoTextBox;
 			this->efStat3TextBox->Name = L"efStat3TextBox";
 			this->efStat3TextBox->Size = System::Drawing::Size(150, 29);
 			this->efStat3TextBox->TabIndex = 2;
+			this->efStat3TextBox->TextChanged += gcnew System::EventHandler(this, &EditorForm::ValidateUndoRed);
 			// 
 			// efStat6TextBox
 			// 
@@ -1300,6 +1324,7 @@ private: System::Windows::Forms::TextBox^ efPersoTextBox;
 			this->efStat6TextBox->Name = L"efStat6TextBox";
 			this->efStat6TextBox->Size = System::Drawing::Size(150, 29);
 			this->efStat6TextBox->TabIndex = 5;
+			this->efStat6TextBox->TextChanged += gcnew System::EventHandler(this, &EditorForm::ValidateUndoRed);
 			// 
 			// efStat2TextBox
 			// 
@@ -1310,6 +1335,7 @@ private: System::Windows::Forms::TextBox^ efPersoTextBox;
 			this->efStat2TextBox->Name = L"efStat2TextBox";
 			this->efStat2TextBox->Size = System::Drawing::Size(150, 29);
 			this->efStat2TextBox->TabIndex = 1;
+			this->efStat2TextBox->TextChanged += gcnew System::EventHandler(this, &EditorForm::ValidateUndoRed);
 			// 
 			// efStat4ModLabel
 			// 
@@ -1326,13 +1352,16 @@ private: System::Windows::Forms::TextBox^ efPersoTextBox;
 			// 
 			// efStat1TextBox
 			// 
+			this->efStat1TextBox->BackColor = System::Drawing::SystemColors::Window;
 			this->efStatsTableLayout->SetColumnSpan(this->efStat1TextBox, 2);
 			this->efStat1TextBox->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
+			this->efStat1TextBox->ForeColor = System::Drawing::SystemColors::WindowText;
 			this->efStat1TextBox->Location = System::Drawing::Point(3, 3);
 			this->efStat1TextBox->Name = L"efStat1TextBox";
 			this->efStat1TextBox->Size = System::Drawing::Size(150, 29);
 			this->efStat1TextBox->TabIndex = 0;
+			this->efStat1TextBox->TextChanged += gcnew System::EventHandler(this, &EditorForm::ValidateUndoRed);
 			// 
 			// efStat4TextBox
 			// 
@@ -1343,6 +1372,7 @@ private: System::Windows::Forms::TextBox^ efPersoTextBox;
 			this->efStat4TextBox->Name = L"efStat4TextBox";
 			this->efStat4TextBox->Size = System::Drawing::Size(150, 29);
 			this->efStat4TextBox->TabIndex = 3;
+			this->efStat4TextBox->TextChanged += gcnew System::EventHandler(this, &EditorForm::ValidateUndoRed);
 			// 
 			// efStat5TextBox
 			// 
@@ -1353,6 +1383,7 @@ private: System::Windows::Forms::TextBox^ efPersoTextBox;
 			this->efStat5TextBox->Name = L"efStat5TextBox";
 			this->efStat5TextBox->Size = System::Drawing::Size(150, 29);
 			this->efStat5TextBox->TabIndex = 4;
+			this->efStat5TextBox->TextChanged += gcnew System::EventHandler(this, &EditorForm::ValidateUndoRed);
 			// 
 			// efOtherStatsTableLayout
 			// 
@@ -2064,6 +2095,104 @@ private: System::Windows::Forms::TextBox^ efPersoTextBox;
 			this->efTabPage5->Text = L"Personality";
 			this->efTabPage5->UseVisualStyleBackColor = true;
 			// 
+			// tableLayoutPanel3
+			// 
+			this->tableLayoutPanel3->ColumnCount = 1;
+			this->tableLayoutPanel3->ColumnStyles->Add((gcnew System::Windows::Forms::ColumnStyle(System::Windows::Forms::SizeType::Percent,
+				100)));
+			this->tableLayoutPanel3->ColumnStyles->Add((gcnew System::Windows::Forms::ColumnStyle(System::Windows::Forms::SizeType::Absolute,
+				20)));
+			this->tableLayoutPanel3->Controls->Add(this->efGoalMotTextBox, 0, 5);
+			this->tableLayoutPanel3->Controls->Add(this->efGoalsMotivesLabel, 0, 4);
+			this->tableLayoutPanel3->Controls->Add(this->efPersonalityLabel, 0, 2);
+			this->tableLayoutPanel3->Controls->Add(this->efAppearTextBox, 0, 1);
+			this->tableLayoutPanel3->Controls->Add(this->efPersoTextBox, 0, 3);
+			this->tableLayoutPanel3->Controls->Add(this->efAppearanceLabel, 0, 0);
+			this->tableLayoutPanel3->Location = System::Drawing::Point(4, 6);
+			this->tableLayoutPanel3->Name = L"tableLayoutPanel3";
+			this->tableLayoutPanel3->RowCount = 6;
+			this->tableLayoutPanel3->RowStyles->Add((gcnew System::Windows::Forms::RowStyle(System::Windows::Forms::SizeType::Absolute, 35)));
+			this->tableLayoutPanel3->RowStyles->Add((gcnew System::Windows::Forms::RowStyle(System::Windows::Forms::SizeType::Absolute, 146)));
+			this->tableLayoutPanel3->RowStyles->Add((gcnew System::Windows::Forms::RowStyle(System::Windows::Forms::SizeType::Absolute, 35)));
+			this->tableLayoutPanel3->RowStyles->Add((gcnew System::Windows::Forms::RowStyle(System::Windows::Forms::SizeType::Absolute, 146)));
+			this->tableLayoutPanel3->RowStyles->Add((gcnew System::Windows::Forms::RowStyle(System::Windows::Forms::SizeType::Absolute, 35)));
+			this->tableLayoutPanel3->RowStyles->Add((gcnew System::Windows::Forms::RowStyle(System::Windows::Forms::SizeType::Absolute, 146)));
+			this->tableLayoutPanel3->RowStyles->Add((gcnew System::Windows::Forms::RowStyle(System::Windows::Forms::SizeType::Absolute, 20)));
+			this->tableLayoutPanel3->Size = System::Drawing::Size(214, 544);
+			this->tableLayoutPanel3->TabIndex = 39;
+			// 
+			// efGoalMotTextBox
+			// 
+			this->efGoalMotTextBox->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F, System::Drawing::FontStyle::Regular,
+				System::Drawing::GraphicsUnit::Point, static_cast<System::Byte>(0)));
+			this->efGoalMotTextBox->Location = System::Drawing::Point(3, 400);
+			this->efGoalMotTextBox->Multiline = true;
+			this->efGoalMotTextBox->Name = L"efGoalMotTextBox";
+			this->efGoalMotTextBox->Size = System::Drawing::Size(208, 141);
+			this->efGoalMotTextBox->TabIndex = 33;
+			this->efGoalMotTextBox->TextChanged += gcnew System::EventHandler(this, &EditorForm::ValidateUndoRed);
+			// 
+			// efGoalsMotivesLabel
+			// 
+			this->efGoalsMotivesLabel->Anchor = static_cast<System::Windows::Forms::AnchorStyles>((System::Windows::Forms::AnchorStyles::Bottom | System::Windows::Forms::AnchorStyles::Left));
+			this->efGoalsMotivesLabel->AutoSize = true;
+			this->efGoalsMotivesLabel->Font = (gcnew System::Drawing::Font(L"Segoe UI", 15.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->efGoalsMotivesLabel->Location = System::Drawing::Point(3, 364);
+			this->efGoalsMotivesLabel->Name = L"efGoalsMotivesLabel";
+			this->efGoalsMotivesLabel->Padding = System::Windows::Forms::Padding(0, 0, 0, 3);
+			this->efGoalsMotivesLabel->Size = System::Drawing::Size(166, 33);
+			this->efGoalsMotivesLabel->TabIndex = 35;
+			this->efGoalsMotivesLabel->Text = L"Goals && Motives";
+			// 
+			// efPersonalityLabel
+			// 
+			this->efPersonalityLabel->Anchor = static_cast<System::Windows::Forms::AnchorStyles>((System::Windows::Forms::AnchorStyles::Bottom | System::Windows::Forms::AnchorStyles::Left));
+			this->efPersonalityLabel->AutoSize = true;
+			this->efPersonalityLabel->Font = (gcnew System::Drawing::Font(L"Segoe UI", 15.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->efPersonalityLabel->Location = System::Drawing::Point(3, 183);
+			this->efPersonalityLabel->Name = L"efPersonalityLabel";
+			this->efPersonalityLabel->Padding = System::Windows::Forms::Padding(0, 0, 0, 3);
+			this->efPersonalityLabel->Size = System::Drawing::Size(113, 33);
+			this->efPersonalityLabel->TabIndex = 33;
+			this->efPersonalityLabel->Text = L"Personality";
+			// 
+			// efAppearTextBox
+			// 
+			this->efAppearTextBox->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->efAppearTextBox->Location = System::Drawing::Point(3, 38);
+			this->efAppearTextBox->Multiline = true;
+			this->efAppearTextBox->Name = L"efAppearTextBox";
+			this->efAppearTextBox->Size = System::Drawing::Size(208, 140);
+			this->efAppearTextBox->TabIndex = 31;
+			this->efAppearTextBox->TextChanged += gcnew System::EventHandler(this, &EditorForm::ValidateUndoRed);
+			// 
+			// efPersoTextBox
+			// 
+			this->efPersoTextBox->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->efPersoTextBox->Location = System::Drawing::Point(3, 219);
+			this->efPersoTextBox->Multiline = true;
+			this->efPersoTextBox->Name = L"efPersoTextBox";
+			this->efPersoTextBox->Size = System::Drawing::Size(208, 140);
+			this->efPersoTextBox->TabIndex = 32;
+			this->efPersoTextBox->TextChanged += gcnew System::EventHandler(this, &EditorForm::ValidateUndoRed);
+			// 
+			// efAppearanceLabel
+			// 
+			this->efAppearanceLabel->Anchor = static_cast<System::Windows::Forms::AnchorStyles>((System::Windows::Forms::AnchorStyles::Bottom | System::Windows::Forms::AnchorStyles::Left));
+			this->efAppearanceLabel->AutoSize = true;
+			this->efAppearanceLabel->Font = (gcnew System::Drawing::Font(L"Segoe UI", 15.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->efAppearanceLabel->Location = System::Drawing::Point(3, 2);
+			this->efAppearanceLabel->Name = L"efAppearanceLabel";
+			this->efAppearanceLabel->Padding = System::Windows::Forms::Padding(0, 0, 0, 3);
+			this->efAppearanceLabel->Size = System::Drawing::Size(124, 33);
+			this->efAppearanceLabel->TabIndex = 20;
+			this->efAppearanceLabel->Text = L"Appearance";
+			// 
 			// tableLayoutPanel2
 			// 
 			this->tableLayoutPanel2->ColumnCount = 9;
@@ -2121,6 +2250,7 @@ private: System::Windows::Forms::TextBox^ efPersoTextBox;
 			this->efFlawsListBox->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
 			this->efFlawsListBox->FormattingEnabled = true;
+			this->efFlawsListBox->HorizontalScrollbar = true;
 			this->efFlawsListBox->ItemHeight = 16;
 			this->efFlawsListBox->Location = System::Drawing::Point(309, 108);
 			this->efFlawsListBox->Name = L"efFlawsListBox";
@@ -2134,6 +2264,7 @@ private: System::Windows::Forms::TextBox^ efPersoTextBox;
 			this->efBondsListBox->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
 			this->efBondsListBox->FormattingEnabled = true;
+			this->efBondsListBox->HorizontalScrollbar = true;
 			this->efBondsListBox->ItemHeight = 16;
 			this->efBondsListBox->Location = System::Drawing::Point(156, 108);
 			this->efBondsListBox->Name = L"efBondsListBox";
@@ -2148,6 +2279,7 @@ private: System::Windows::Forms::TextBox^ efPersoTextBox;
 			this->efFDelButton->TabIndex = 50;
 			this->efFDelButton->Text = L"Del";
 			this->efFDelButton->UseVisualStyleBackColor = true;
+			this->efFDelButton->Click += gcnew System::EventHandler(this, &EditorForm::efFDelButton_Click);
 			// 
 			// efFViewButton
 			// 
@@ -2157,6 +2289,7 @@ private: System::Windows::Forms::TextBox^ efPersoTextBox;
 			this->efFViewButton->TabIndex = 49;
 			this->efFViewButton->Text = L"View";
 			this->efFViewButton->UseVisualStyleBackColor = true;
+			this->efFViewButton->Click += gcnew System::EventHandler(this, &EditorForm::efFViewButton_Click);
 			// 
 			// efFAddButton
 			// 
@@ -2166,6 +2299,7 @@ private: System::Windows::Forms::TextBox^ efPersoTextBox;
 			this->efFAddButton->TabIndex = 48;
 			this->efFAddButton->Text = L"Add";
 			this->efFAddButton->UseVisualStyleBackColor = true;
+			this->efFAddButton->Click += gcnew System::EventHandler(this, &EditorForm::efFAddButton_Click);
 			// 
 			// efBDelButton
 			// 
@@ -2175,6 +2309,7 @@ private: System::Windows::Forms::TextBox^ efPersoTextBox;
 			this->efBDelButton->TabIndex = 47;
 			this->efBDelButton->Text = L"Del";
 			this->efBDelButton->UseVisualStyleBackColor = true;
+			this->efBDelButton->Click += gcnew System::EventHandler(this, &EditorForm::efBDelButton_Click);
 			// 
 			// efBViewButton
 			// 
@@ -2184,6 +2319,7 @@ private: System::Windows::Forms::TextBox^ efPersoTextBox;
 			this->efBViewButton->TabIndex = 46;
 			this->efBViewButton->Text = L"View";
 			this->efBViewButton->UseVisualStyleBackColor = true;
+			this->efBViewButton->Click += gcnew System::EventHandler(this, &EditorForm::efBViewButton_Click);
 			// 
 			// efBAddButton
 			// 
@@ -2193,6 +2329,7 @@ private: System::Windows::Forms::TextBox^ efPersoTextBox;
 			this->efBAddButton->TabIndex = 45;
 			this->efBAddButton->Text = L"Add";
 			this->efBAddButton->UseVisualStyleBackColor = true;
+			this->efBAddButton->Click += gcnew System::EventHandler(this, &EditorForm::efBAddButton_Click);
 			// 
 			// efIDelButton
 			// 
@@ -2202,6 +2339,7 @@ private: System::Windows::Forms::TextBox^ efPersoTextBox;
 			this->efIDelButton->TabIndex = 44;
 			this->efIDelButton->Text = L"Del";
 			this->efIDelButton->UseVisualStyleBackColor = true;
+			this->efIDelButton->Click += gcnew System::EventHandler(this, &EditorForm::efIDelButton_Click);
 			// 
 			// efIViewButton
 			// 
@@ -2211,6 +2349,7 @@ private: System::Windows::Forms::TextBox^ efPersoTextBox;
 			this->efIViewButton->TabIndex = 43;
 			this->efIViewButton->Text = L"View";
 			this->efIViewButton->UseVisualStyleBackColor = true;
+			this->efIViewButton->Click += gcnew System::EventHandler(this, &EditorForm::efIViewButton_Click);
 			// 
 			// efFlawsTextBox
 			// 
@@ -2221,6 +2360,7 @@ private: System::Windows::Forms::TextBox^ efPersoTextBox;
 			this->efFlawsTextBox->Name = L"efFlawsTextBox";
 			this->efFlawsTextBox->Size = System::Drawing::Size(148, 29);
 			this->efFlawsTextBox->TabIndex = 41;
+			this->efFlawsTextBox->TextChanged += gcnew System::EventHandler(this, &EditorForm::ValidateUndoRed);
 			// 
 			// efBondsTextBox
 			// 
@@ -2231,6 +2371,7 @@ private: System::Windows::Forms::TextBox^ efPersoTextBox;
 			this->efBondsTextBox->Name = L"efBondsTextBox";
 			this->efBondsTextBox->Size = System::Drawing::Size(147, 29);
 			this->efBondsTextBox->TabIndex = 40;
+			this->efBondsTextBox->TextChanged += gcnew System::EventHandler(this, &EditorForm::ValidateUndoRed);
 			// 
 			// efIdealsLabel
 			// 
@@ -2269,6 +2410,7 @@ private: System::Windows::Forms::TextBox^ efPersoTextBox;
 			this->efIdealsTextBox->Name = L"efIdealsTextBox";
 			this->efIdealsTextBox->Size = System::Drawing::Size(147, 29);
 			this->efIdealsTextBox->TabIndex = 39;
+			this->efIdealsTextBox->TextChanged += gcnew System::EventHandler(this, &EditorForm::ValidateUndoRed);
 			// 
 			// efIAddButton
 			// 
@@ -2278,6 +2420,7 @@ private: System::Windows::Forms::TextBox^ efPersoTextBox;
 			this->efIAddButton->TabIndex = 42;
 			this->efIAddButton->Text = L"Add";
 			this->efIAddButton->UseVisualStyleBackColor = true;
+			this->efIAddButton->Click += gcnew System::EventHandler(this, &EditorForm::efIAddButton_Click);
 			// 
 			// efIdealsListBox
 			// 
@@ -2286,6 +2429,7 @@ private: System::Windows::Forms::TextBox^ efPersoTextBox;
 			this->efIdealsListBox->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
 			this->efIdealsListBox->FormattingEnabled = true;
+			this->efIdealsListBox->HorizontalScrollbar = true;
 			this->efIdealsListBox->ItemHeight = 16;
 			this->efIdealsListBox->Location = System::Drawing::Point(3, 108);
 			this->efIdealsListBox->Name = L"efIdealsListBox";
@@ -2305,45 +2449,6 @@ private: System::Windows::Forms::TextBox^ efPersoTextBox;
 			this->efFlawsLabel->Size = System::Drawing::Size(63, 33);
 			this->efFlawsLabel->TabIndex = 38;
 			this->efFlawsLabel->Text = L"Flaws";
-			// 
-			// efGoalsMotivesLabel
-			// 
-			this->efGoalsMotivesLabel->Anchor = static_cast<System::Windows::Forms::AnchorStyles>((System::Windows::Forms::AnchorStyles::Bottom | System::Windows::Forms::AnchorStyles::Left));
-			this->efGoalsMotivesLabel->AutoSize = true;
-			this->efGoalsMotivesLabel->Font = (gcnew System::Drawing::Font(L"Segoe UI", 15.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
-				static_cast<System::Byte>(0)));
-			this->efGoalsMotivesLabel->Location = System::Drawing::Point(3, 364);
-			this->efGoalsMotivesLabel->Name = L"efGoalsMotivesLabel";
-			this->efGoalsMotivesLabel->Padding = System::Windows::Forms::Padding(0, 0, 0, 3);
-			this->efGoalsMotivesLabel->Size = System::Drawing::Size(166, 33);
-			this->efGoalsMotivesLabel->TabIndex = 35;
-			this->efGoalsMotivesLabel->Text = L"Goals && Motives";
-			// 
-			// efPersonalityLabel
-			// 
-			this->efPersonalityLabel->Anchor = static_cast<System::Windows::Forms::AnchorStyles>((System::Windows::Forms::AnchorStyles::Bottom | System::Windows::Forms::AnchorStyles::Left));
-			this->efPersonalityLabel->AutoSize = true;
-			this->efPersonalityLabel->Font = (gcnew System::Drawing::Font(L"Segoe UI", 15.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
-				static_cast<System::Byte>(0)));
-			this->efPersonalityLabel->Location = System::Drawing::Point(3, 183);
-			this->efPersonalityLabel->Name = L"efPersonalityLabel";
-			this->efPersonalityLabel->Padding = System::Windows::Forms::Padding(0, 0, 0, 3);
-			this->efPersonalityLabel->Size = System::Drawing::Size(113, 33);
-			this->efPersonalityLabel->TabIndex = 33;
-			this->efPersonalityLabel->Text = L"Personality";
-			// 
-			// efAppearanceLabel
-			// 
-			this->efAppearanceLabel->Anchor = static_cast<System::Windows::Forms::AnchorStyles>((System::Windows::Forms::AnchorStyles::Bottom | System::Windows::Forms::AnchorStyles::Left));
-			this->efAppearanceLabel->AutoSize = true;
-			this->efAppearanceLabel->Font = (gcnew System::Drawing::Font(L"Segoe UI", 15.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
-				static_cast<System::Byte>(0)));
-			this->efAppearanceLabel->Location = System::Drawing::Point(3, 2);
-			this->efAppearanceLabel->Name = L"efAppearanceLabel";
-			this->efAppearanceLabel->Padding = System::Windows::Forms::Padding(0, 0, 0, 3);
-			this->efAppearanceLabel->Size = System::Drawing::Size(124, 33);
-			this->efAppearanceLabel->TabIndex = 20;
-			this->efAppearanceLabel->Text = L"Appearance";
 			// 
 			// tableLayoutPanel1
 			// 
@@ -2392,6 +2497,7 @@ private: System::Windows::Forms::TextBox^ efPersoTextBox;
 			this->efTMorTextBox->Name = L"efTMorTextBox";
 			this->efTMorTextBox->Size = System::Drawing::Size(236, 144);
 			this->efTMorTextBox->TabIndex = 24;
+			this->efTMorTextBox->TextChanged += gcnew System::EventHandler(this, &EditorForm::ValidateUndoRed);
 			// 
 			// efTComTextBox
 			// 
@@ -2402,6 +2508,7 @@ private: System::Windows::Forms::TextBox^ efPersoTextBox;
 			this->efTComTextBox->Name = L"efTComTextBox";
 			this->efTComTextBox->Size = System::Drawing::Size(236, 144);
 			this->efTComTextBox->TabIndex = 29;
+			this->efTComTextBox->TextChanged += gcnew System::EventHandler(this, &EditorForm::ValidateUndoRed);
 			// 
 			// efTMoraleLabel
 			// 
@@ -2436,6 +2543,7 @@ private: System::Windows::Forms::TextBox^ efPersoTextBox;
 			this->efTSocTextBox->Name = L"efTSocTextBox";
 			this->efTSocTextBox->Size = System::Drawing::Size(236, 144);
 			this->efTSocTextBox->TabIndex = 30;
+			this->efTSocTextBox->TextChanged += gcnew System::EventHandler(this, &EditorForm::ValidateUndoRed);
 			// 
 			// efTCombatLabel
 			// 
@@ -2459,6 +2567,7 @@ private: System::Windows::Forms::TextBox^ efPersoTextBox;
 			this->efSaveButton->TabIndex = 97;
 			this->efSaveButton->Text = L"Save";
 			this->efSaveButton->UseVisualStyleBackColor = true;
+			this->efSaveButton->Click += gcnew System::EventHandler(this, &EditorForm::efSaveButton_Click);
 			// 
 			// efCancelButton
 			// 
@@ -2473,61 +2582,30 @@ private: System::Windows::Forms::TextBox^ efPersoTextBox;
 			this->efCancelButton->UseVisualStyleBackColor = true;
 			this->efCancelButton->Click += gcnew System::EventHandler(this, &EditorForm::efCancelButton_Click);
 			// 
-			// tableLayoutPanel3
+			// efAddlStatsLabel
 			// 
-			this->tableLayoutPanel3->ColumnCount = 1;
-			this->tableLayoutPanel3->ColumnStyles->Add((gcnew System::Windows::Forms::ColumnStyle(System::Windows::Forms::SizeType::Percent,
-				100)));
-			this->tableLayoutPanel3->ColumnStyles->Add((gcnew System::Windows::Forms::ColumnStyle(System::Windows::Forms::SizeType::Absolute,
-				20)));
-			this->tableLayoutPanel3->Controls->Add(this->efGoalMotTextBox, 0, 5);
-			this->tableLayoutPanel3->Controls->Add(this->efGoalsMotivesLabel, 0, 4);
-			this->tableLayoutPanel3->Controls->Add(this->efPersonalityLabel, 0, 2);
-			this->tableLayoutPanel3->Controls->Add(this->efAppearTextBox, 0, 1);
-			this->tableLayoutPanel3->Controls->Add(this->efPersoTextBox, 0, 3);
-			this->tableLayoutPanel3->Controls->Add(this->efAppearanceLabel, 0, 0);
-			this->tableLayoutPanel3->Location = System::Drawing::Point(4, 6);
-			this->tableLayoutPanel3->Name = L"tableLayoutPanel3";
-			this->tableLayoutPanel3->RowCount = 6;
-			this->tableLayoutPanel3->RowStyles->Add((gcnew System::Windows::Forms::RowStyle(System::Windows::Forms::SizeType::Absolute, 35)));
-			this->tableLayoutPanel3->RowStyles->Add((gcnew System::Windows::Forms::RowStyle(System::Windows::Forms::SizeType::Absolute, 146)));
-			this->tableLayoutPanel3->RowStyles->Add((gcnew System::Windows::Forms::RowStyle(System::Windows::Forms::SizeType::Absolute, 35)));
-			this->tableLayoutPanel3->RowStyles->Add((gcnew System::Windows::Forms::RowStyle(System::Windows::Forms::SizeType::Absolute, 146)));
-			this->tableLayoutPanel3->RowStyles->Add((gcnew System::Windows::Forms::RowStyle(System::Windows::Forms::SizeType::Absolute, 35)));
-			this->tableLayoutPanel3->RowStyles->Add((gcnew System::Windows::Forms::RowStyle(System::Windows::Forms::SizeType::Absolute, 146)));
-			this->tableLayoutPanel3->RowStyles->Add((gcnew System::Windows::Forms::RowStyle(System::Windows::Forms::SizeType::Absolute, 20)));
-			this->tableLayoutPanel3->Size = System::Drawing::Size(214, 544);
-			this->tableLayoutPanel3->TabIndex = 39;
-			// 
-			// efAppearTextBox
-			// 
-			this->efAppearTextBox->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+			this->efAddlStatsLabel->Anchor = System::Windows::Forms::AnchorStyles::Left;
+			this->efAddlStatsLabel->AutoSize = true;
+			this->efAddlStatsLabel->Font = (gcnew System::Drawing::Font(L"Segoe UI", 15.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
-			this->efAppearTextBox->Location = System::Drawing::Point(3, 38);
-			this->efAppearTextBox->Multiline = true;
-			this->efAppearTextBox->Name = L"efAppearTextBox";
-			this->efAppearTextBox->Size = System::Drawing::Size(208, 140);
-			this->efAppearTextBox->TabIndex = 31;
+			this->efAddlStatsLabel->Location = System::Drawing::Point(3, 399);
+			this->efAddlStatsLabel->Name = L"efAddlStatsLabel";
+			this->efAddlStatsLabel->Size = System::Drawing::Size(93, 30);
+			this->efAddlStatsLabel->TabIndex = 15;
+			this->efAddlStatsLabel->Text = L"Statistics";
 			// 
-			// efPersoTextBox
+			// efAddlStatsTextBox
 			// 
-			this->efPersoTextBox->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+			this->efCoreInfoTableLayout->SetColumnSpan(this->efAddlStatsTextBox, 2);
+			this->efAddlStatsTextBox->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
-			this->efPersoTextBox->Location = System::Drawing::Point(3, 219);
-			this->efPersoTextBox->Multiline = true;
-			this->efPersoTextBox->Name = L"efPersoTextBox";
-			this->efPersoTextBox->Size = System::Drawing::Size(208, 140);
-			this->efPersoTextBox->TabIndex = 32;
-			// 
-			// efGoalMotTextBox
-			// 
-			this->efGoalMotTextBox->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F, System::Drawing::FontStyle::Regular,
-				System::Drawing::GraphicsUnit::Point, static_cast<System::Byte>(0)));
-			this->efGoalMotTextBox->Location = System::Drawing::Point(3, 400);
-			this->efGoalMotTextBox->Multiline = true;
-			this->efGoalMotTextBox->Name = L"efGoalMotTextBox";
-			this->efGoalMotTextBox->Size = System::Drawing::Size(208, 141);
-			this->efGoalMotTextBox->TabIndex = 33;
+			this->efAddlStatsTextBox->Location = System::Drawing::Point(123, 363);
+			this->efAddlStatsTextBox->Multiline = true;
+			this->efAddlStatsTextBox->Name = L"efAddlStatsTextBox";
+			this->efCoreInfoTableLayout->SetRowSpan(this->efAddlStatsTextBox, 3);
+			this->efAddlStatsTextBox->ScrollBars = System::Windows::Forms::ScrollBars::Vertical;
+			this->efAddlStatsTextBox->Size = System::Drawing::Size(346, 102);
+			this->efAddlStatsTextBox->TabIndex = 16;
 			// 
 			// EditorForm
 			// 
@@ -2585,12 +2663,12 @@ private: System::Windows::Forms::TextBox^ efPersoTextBox;
 			this->efTraitsTableLayout->PerformLayout();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->efItemQtyNumUpDown))->EndInit();
 			this->efTabPage5->ResumeLayout(false);
+			this->tableLayoutPanel3->ResumeLayout(false);
+			this->tableLayoutPanel3->PerformLayout();
 			this->tableLayoutPanel2->ResumeLayout(false);
 			this->tableLayoutPanel2->PerformLayout();
 			this->tableLayoutPanel1->ResumeLayout(false);
 			this->tableLayoutPanel1->PerformLayout();
-			this->tableLayoutPanel3->ResumeLayout(false);
-			this->tableLayoutPanel3->PerformLayout();
 			this->ResumeLayout(false);
 
 		}
@@ -2621,5 +2699,19 @@ private: System::Windows::Forms::TextBox^ efPersoTextBox;
 	private: System::Void efDeleteTraitButton_Click(System::Object^ sender, System::EventArgs^ e);
 	private: System::Void efItemAddButton_Click(System::Object^ sender, System::EventArgs^ e);
 	private: System::Void efItemDeleteButton_Click(System::Object^ sender, System::EventArgs^ e);
+	private: System::Void efIAddButton_Click(System::Object^ sender, System::EventArgs^ e);
+	private: System::Void efIViewButton_Click(System::Object^ sender, System::EventArgs^ e);
+	private: System::Void efIDelButton_Click(System::Object^ sender, System::EventArgs^ e);
+	private: System::Void efBAddButton_Click(System::Object^ sender, System::EventArgs^ e);
+	private: System::Void efBViewButton_Click(System::Object^ sender, System::EventArgs^ e);
+	private: System::Void efBDelButton_Click(System::Object^ sender, System::EventArgs^ e);
+	private: System::Void efFAddButton_Click(System::Object^ sender, System::EventArgs^ e);
+	private: System::Void efFViewButton_Click(System::Object^ sender, System::EventArgs^ e);
+	private: System::Void efFDelButton_Click(System::Object^ sender, System::EventArgs^ e);
+	private: System::Void efSaveButton_Click(System::Object^ sender, System::EventArgs^ e);
+	private: System::Void efNextButton_Click(System::Object^ sender, System::EventArgs^ e);
+	private: bool ValidateEditorFormSave();
+	private: System::Void ValidateUndoRed(System::Object^ sender, System::EventArgs^ e);
+	private: System::Void efRaceComboBox_SelectedIndexChanged(System::Object^ sender, System::EventArgs^ e);
 };
 }

@@ -44,15 +44,19 @@ namespace NPCSheet {
 			e.ShowDialog();
 			this->Show();
 			if (e.DialogResult == System::Windows::Forms::DialogResult::OK) {
-				NPCs.push_back(e.retNPC());
-				// update datagridview
+				NPCs->Add(e.retNPC());
+				int idx = NPCs->Count - 1;
+				this->cfDataGrid->Rows->Add(NPCs[idx]->name, NPCs[idx]->alignment, NPCs[idx]->race);
+				cfDataGrid->ClearSelection();
 			}
 		}
 	}
 
-	// Clicking the Edit buton on the core form.
+	// Clicking the Edit button on the core form.
 	System::Void CoreForm::cfEditButton_Click(System::Object^ sender, System::EventArgs^ e) {
-		// Editor
+		if (cfDataGrid->CurrentCell->RowIndex != -1) {
+
+		}
 	}
 
 	// Clicking the Save button on the core form.
@@ -98,32 +102,6 @@ namespace NPCSheet {
 	System::Void EditorForm::efCancelButton_Click(System::Object^ sender, System::EventArgs^ e) {
 		this->Close();
 	} 
-
-	/*
-	// When something changes which tab the editor form is focused on.
-	// This was supposed to dynamically change the size of the form to match each tab, but it's currently unused!
-	System::Void EditorForm::efTabControl_SelectedIndexChanged(System::Object^ sender, System::EventArgs^ e) {
-		switch (efTabControl->SelectedIndex) {
-		case 0:
-			//efTableLayout->Width = ;
-			//this->Width = ;
-			break;
-		case 1:
-			//efTableLayout->Width = ;
-			//this->Width = ;
-			break;
-		case 2:
-			break;
-		case 3:
-			break;
-		case 4:
-			break;
-		default:
-			String^ message = "Something wonky has occured with the tab control selected index.";
-			MessageBox::Show(message, "Editor", MessageBoxButtons::OK, MessageBoxIcon::Information);
-			break;
-		}
-	}*/
 
 	// When the checkbox next to "Use Traditional?" is checked in the editor form.
 	System::Void EditorForm::efStatsCheckBox_CheckedChanged(System::Object^ sender, System::EventArgs^ e) {
@@ -263,9 +241,12 @@ namespace NPCSheet {
 
 	// When the Weapon Creator button is clicked in the editor form.
 	System::Void EditorForm::efWeaponCreatorButton_Click(System::Object^ sender, System::EventArgs^ e) {
+		if (efTabPage3->BackColor == System::Drawing::Color::LightCoral) { efTabPage3->BackColor = System::Drawing::Color::Transparent; } // Reset invalid.
+		efUnsaved = true;
 		array<String^>^ scores = gcnew array<String^>{efStat1TextBox->Text, efStat2TextBox->Text, efStat3TextBox->Text,
 			efStat4TextBox->Text, efStat5TextBox->Text, efStat6TextBox->Text, efStat1ModLabel->Text, efStat2ModLabel->Text,
 			efStat3ModLabel->Text, efStat4ModLabel->Text, efStat5ModLabel->Text, efStat6ModLabel->Text };
+
 
 		WeaponForm w(scores);
 		w.ShowDialog();
@@ -308,6 +289,8 @@ namespace NPCSheet {
 		String^ an = efActionNameTextBox->Text;
 		String^ ad = efActionDescTextBox->Text;
 		if (!String::IsNullOrEmpty(an) && !String::IsNullOrEmpty(ad)) {
+			if (efTabPage3->BackColor == System::Drawing::Color::LightCoral) { efTabPage3->BackColor = System::Drawing::Color::Transparent; } // Reset invalid.
+			efUnsaved = true;
 			n->actionsName->Add(an);
 			n->actionsDesc->Add(ad);
 			efActionListBox->Items->Add(an);
@@ -339,6 +322,8 @@ namespace NPCSheet {
 	// When the Add Spell button is clicked in the editor form.
 	System::Void EditorForm::efSpellsAddButton_Click(System::Object^ sender, System::EventArgs^ e) {
 		if (!String::IsNullOrEmpty(efSpellsTextBox->Text)) {
+			if (efTabPage3->BackColor == System::Drawing::Color::LightCoral) { efTabPage3->BackColor = System::Drawing::Color::Transparent; } // Reset invalid.
+			efUnsaved = true;
 			int idx = Decimal::ToInt32(efSpellsNumUpDown->Value);
 			n->spells[idx]->Add(efSpellsTextBox->Text);
 			DisplaySpellsInListBox();
@@ -492,6 +477,149 @@ namespace NPCSheet {
 		}
 	}
 
+	// When the Add button in the Ideals section is clicked on the editor form.
+	System::Void EditorForm::efIAddButton_Click(System::Object^ sender, System::EventArgs^ e) {
+		String^ txt = efIdealsTextBox->Text;
+		if (!String::IsNullOrEmpty(txt)) {
+			n->ideals->Add(txt);
+			efIdealsListBox->Items->Add(txt);
+			efIdealsTextBox->Clear();
+			efIdealsListBox->Refresh();
+		} else { Media::SystemSounds::Exclamation->Play(); }
+	}
+
+	// When the View button in the Ideals section is clicked on the editor form.
+	System::Void EditorForm::efIViewButton_Click(System::Object^ sender, System::EventArgs^ e) {
+		int idx = efIdealsListBox->SelectedIndex;
+		if (idx != -1) { efIdealsTextBox->Text = n->ideals[idx]; }
+	}
+
+	// When the Del button in the Ideals section is clicked on the editor form.
+	System::Void EditorForm::efIDelButton_Click(System::Object^ sender, System::EventArgs^ e) {
+		int idx = efIdealsListBox->SelectedIndex;
+		if (idx != -1) {
+			n->ideals->RemoveAt(idx);
+			efIdealsListBox->Items->RemoveAt(idx);
+			efIdealsListBox->Refresh();
+		}
+	}
+
+	// When the Add button in the Bonds section is clicked on the editor form.
+	System::Void EditorForm::efBAddButton_Click(System::Object^ sender, System::EventArgs^ e) {
+		String^ txt = efBondsTextBox->Text;
+		if (!String::IsNullOrEmpty(txt)) {
+			n->bonds->Add(txt);
+			efBondsListBox->Items->Add(txt);
+			efBondsTextBox->Clear();
+			efBondsListBox->Refresh();
+		}
+		else { Media::SystemSounds::Exclamation->Play(); }
+	}
+
+	// When the View button in the Bonds section is clicked on the editor form.
+	System::Void EditorForm::efBViewButton_Click(System::Object^ sender, System::EventArgs^ e) {
+		int idx = efBondsListBox->SelectedIndex;
+		if (idx != -1) { efBondsTextBox->Text = n->bonds[idx]; }
+	}
+
+	// When the Del button in the Bonds section is clicked on the editor form.
+	System::Void EditorForm::efBDelButton_Click(System::Object^ sender, System::EventArgs^ e) {
+		int idx = efBondsListBox->SelectedIndex;
+		if (idx != -1) {
+			n->bonds->RemoveAt(idx);
+			efBondsListBox->Items->RemoveAt(idx);
+			efBondsListBox->Refresh();
+		}
+	}
+
+	// When the Add button in the Flaws section is clicked on the editor form.
+	System::Void EditorForm::efFAddButton_Click(System::Object^ sender, System::EventArgs^ e) {
+		String^ txt = efFlawsTextBox->Text;
+		if (!String::IsNullOrEmpty(txt)) {
+			n->flaws->Add(txt);
+			efFlawsListBox->Items->Add(txt);
+			efFlawsTextBox->Clear();
+			efFlawsListBox->Refresh();
+		}
+		else { Media::SystemSounds::Exclamation->Play(); }
+	}
+
+	// When the View button in the Flaws section is clicked on the editor form.
+	System::Void EditorForm::efFViewButton_Click(System::Object^ sender, System::EventArgs^ e) {
+		int idx = efFlawsListBox->SelectedIndex;
+		if (idx != -1) { efFlawsTextBox->Text = n->flaws[idx]; }
+	}
+
+	// When the Del button in the Flaws section is clicked on the editor form.
+	System::Void EditorForm::efFDelButton_Click(System::Object^ sender, System::EventArgs^ e) {
+		int idx = efFlawsListBox->SelectedIndex;
+		if (idx != -1) {
+			n->flaws->RemoveAt(idx);
+			efFlawsListBox->Items->RemoveAt(idx);
+			efFlawsListBox->Refresh();
+		}
+	}
+
+	// When the save button is clicked on the editor form.
+	System::Void EditorForm::efSaveButton_Click(System::Object^ sender, System::EventArgs^ e) {
+		if (ValidateEditorFormSave()) {
+			n->name = efNameTextBox->Text;
+			n->race = efRaceTextBox->Text;
+			n->raceName = efRaceComboBox->Text;
+			n->alignment = efAlignmentTextBox->Text;
+			n->creatureType = efTypeTextBox->Text;
+			if (!String::IsNullOrEmpty(efTagTextBox->Text)) { n->ctTag = "(" + efTagTextBox->Text + ")"; }
+			n->tacticsSocial = efTSocTextBox->Text;
+			n->tacticsCombat = efTComTextBox->Text;
+			n->tacticsMorale = efTMorTextBox->Text;
+			n->personality = efPersoTextBox->Text;
+			n->appearance = efAppearTextBox->Text;
+			n->goalsMotives = efGoalMotTextBox->Text;
+			n->initBonus = Decimal::ToInt32(efInitNumUpDown->Value);
+			n->hp = Decimal::ToInt32(efHPNumUpDown->Value);
+			n->sp = Decimal::ToInt32(efSPNumUpDown->Value);
+			array<String^>^ sen = efSensesTextBox->Text->Split('\n');
+			for each (String ^ s in sen) { n->senses->Add(s); }
+			array<String^>^ lan = efLanguagesTextBox->Text->Split('\n');
+			for each (String ^ l in lan) { n->languages->Add(l); }
+			array<String^>^ add = efAddlStatsTextBox->Text->Split('\n');
+			for each (String ^ a in add) { n->languages->Add(a); }
+			for each (auto item in efItemsListBox->Items) {n->items->Add(item->ToString());}
+			n->defenseDesc[0] = efDef1TextBox->Text;
+			n->defenseDesc[1] = efDef2TextBox->Text;
+			n->defenseDesc[2] = efDef2TextBox->Text;
+			n->statDesc[0] = efStat1TextBox->Text;
+			n->statDesc[1] = efStat2TextBox->Text;
+			n->statDesc[2] = efStat3TextBox->Text;
+			n->statDesc[3] = efStat4TextBox->Text;
+			n->statDesc[4] = efStat5TextBox->Text;
+			n->statDesc[5] = efStat6TextBox->Text;
+			n->defenseVal[0] = Decimal::ToInt32(efDef1NumUpDown->Value);
+			n->defenseVal[1] = Decimal::ToInt32(efDef2NumUpDown->Value);
+			n->defenseVal[2] = Decimal::ToInt32(efDef3NumUpDown->Value);
+			n->statVal[0] = Decimal::ToInt32(efStat1NumUpDown->Value);
+			n->statVal[1] = Decimal::ToInt32(efStat2NumUpDown->Value);
+			n->statVal[2] = Decimal::ToInt32(efStat3NumUpDown->Value);
+			n->statVal[3] = Decimal::ToInt32(efStat4NumUpDown->Value);
+			n->statVal[4] = Decimal::ToInt32(efStat5NumUpDown->Value);
+			n->statVal[5] = Decimal::ToInt32(efStat6NumUpDown->Value);
+			// Everything not listed here is automatically saved via the related ListBoxes.
+			this->DialogResult = System::Windows::Forms::DialogResult::OK;
+			efUnsaved = false;
+			this->Close();
+		}
+		else {
+			String^ message = "Missing required fields. Please doublecheck them.";
+			String^ caption = "Editor";
+			MessageBox::Show(message, caption, MessageBoxButtons::OK, MessageBoxIcon::Warning);
+		}
+	}
+
+	// When the next button is clicked on the editor form.
+	System::Void EditorForm::efNextButton_Click(System::Object^ sender, System::EventArgs^ e) {
+
+	}
+
 	NPC^ EditorForm::retNPC() {
 		return n;
 	}
@@ -511,5 +639,108 @@ namespace NPCSheet {
 			validate5 = !String::IsNullOrEmpty(wfType2TextBox->Text);
 		}
 		return (validate1 && validate2 && validate3 && validate4 && validate5);
+	}
+
+	bool EditorForm::ValidateEditorFormSave() {
+		// Time to validate a bunch of stuff. Anything that fails validation gets highlighted in red.
+		array<bool>^ valid = gcnew array<bool>(25);
+
+		valid[0] = !String::IsNullOrEmpty(efNameTextBox->Text); // Name
+		if (!valid[0]) { efNameTextBox->BackColor = System::Drawing::Color::LightCoral; }
+		valid[1] = !String::IsNullOrEmpty(efRaceComboBox->Text); // Race name
+		if (!valid[1]) { efRaceComboBox->BackColor = System::Drawing::Color::LightCoral; }
+		valid[2] = !String::IsNullOrEmpty(efRaceTextBox->Text); // Race
+		if (!valid[2]) { efRaceTextBox->BackColor = System::Drawing::Color::LightCoral; }
+		valid[3] = !String::IsNullOrEmpty(efTypeTextBox->Text); // Type
+		if (!valid[3]) { efTypeTextBox->BackColor = System::Drawing::Color::LightCoral; }
+		valid[4] = !String::IsNullOrEmpty(efLanguagesTextBox->Text); // Languages
+		if (!valid[4]) { efLanguagesTextBox->BackColor = System::Drawing::Color::LightCoral; }
+		valid[5] = !String::IsNullOrEmpty(efSensesTextBox->Text); // Languages
+		if (!valid[5]) { efSensesTextBox->BackColor = System::Drawing::Color::LightCoral; }
+
+		if (efStatsCheckBox->Checked) { // Using traditional ability scores skips this segment. 
+			for (int i = 6; i <= 11; ++i) { valid[i] = true; }
+		}
+		else {
+			valid[6] = !String::IsNullOrEmpty(efStat1TextBox->Text);
+			if (!valid[6]) { efStat1TextBox->BackColor = System::Drawing::Color::LightCoral; }
+			valid[7] = !String::IsNullOrEmpty(efStat2TextBox->Text);
+			if (!valid[7]) { efStat2TextBox->BackColor = System::Drawing::Color::LightCoral; }
+			valid[8] = !String::IsNullOrEmpty(efStat3TextBox->Text);
+			if (!valid[8]) { efStat3TextBox->BackColor = System::Drawing::Color::LightCoral; }
+			valid[9] = !String::IsNullOrEmpty(efStat4TextBox->Text);
+			if (!valid[9]) { efStat4TextBox->BackColor = System::Drawing::Color::LightCoral; }
+			valid[10] = !String::IsNullOrEmpty(efStat5TextBox->Text);
+			if (!valid[10]) { efStat5TextBox->BackColor = System::Drawing::Color::LightCoral; }
+			valid[11] = !String::IsNullOrEmpty(efStat6TextBox->Text);
+			if (!valid[11]) { efStat6TextBox->BackColor = System::Drawing::Color::LightCoral; }
+		}
+
+		valid[12] = !String::IsNullOrEmpty(efDef1TextBox->Text); // Defense 1
+		if (!valid[12]) { efDef1TextBox->BackColor = System::Drawing::Color::LightCoral; }
+
+		if (efDef2UseCheckBox->Checked) {
+			valid[13] = !String::IsNullOrEmpty(efDef2TextBox->Text); // Defense 2 (if enabled)
+			if (!valid[13]) { efDef2TextBox->BackColor = System::Drawing::Color::LightCoral; }
+		} else { valid[13] = true; }
+
+		if (efDef3UseCheckBox->Checked) {
+			valid[14] = !String::IsNullOrEmpty(efDef3TextBox->Text); // Defense 3 (if enabled)
+			if (!valid[14]) { efDef3TextBox->BackColor = System::Drawing::Color::LightCoral; }
+		}
+		else { valid[14] = true; }
+
+		// Spell checker because the listbox can't be counted.
+		bool spell;
+		for (int i = 0; i <= 9; ++i) {
+			if (n->spells[i]->Count > 0) {
+				spell = true;
+				break;
+			}
+		}
+		// Must have at least one weapon, action, or spell. 
+		valid[15] = ((efWeaponsListBox->Items->Count > 0) || (efActionListBox->Items->Count > 0) || spell);
+		if (!valid[15]) { efTabPage3->BackColor = System::Drawing::Color::LightCoral; } 
+		
+		valid[16] = !String::IsNullOrEmpty(efAppearTextBox->Text); // Appearance
+		if (!valid[16]) { efAppearTextBox->BackColor = System::Drawing::Color::LightCoral; }
+		valid[17] = !String::IsNullOrEmpty(efPersoTextBox->Text); // Personality
+		if (!valid[17]) { efPersoTextBox->BackColor = System::Drawing::Color::LightCoral; }
+		valid[18] = !String::IsNullOrEmpty(efGoalMotTextBox->Text); // Goals & Motives
+		if (!valid[18]) { efGoalMotTextBox->BackColor = System::Drawing::Color::LightCoral; }
+		valid[19] = !String::IsNullOrEmpty(efTSocTextBox->Text); // Tactics - Social
+		if (!valid[19]) { efTSocTextBox->BackColor = System::Drawing::Color::LightCoral; }
+		valid[20] = !String::IsNullOrEmpty(efTComTextBox->Text); // Tactics - Combat
+		if (!valid[20]) { efTComTextBox->BackColor = System::Drawing::Color::LightCoral; }
+		valid[21] = !String::IsNullOrEmpty(efTMorTextBox->Text); // Tactics - Morale
+		if (!valid[21]) { efTMorTextBox->BackColor = System::Drawing::Color::LightCoral; }
+		valid[22] = (efIdealsListBox->Items->Count > 0); // Ideals
+		if (!valid[22]) { efIdealsTextBox->BackColor = System::Drawing::Color::LightCoral; }
+		valid[23] = (efBondsListBox->Items->Count > 0); // Bonds
+		if (!valid[23]) { efBondsTextBox->BackColor = System::Drawing::Color::LightCoral; }
+		valid[24] = (efFlawsListBox->Items->Count > 0); // Flaws
+		if (!valid[24]) { efFlawsTextBox->BackColor = System::Drawing::Color::LightCoral; }
+
+		for each (bool b in valid) {
+			if (!b) { return false; }
+		}
+		return true;
+	}
+
+	// Event removes the red highlight on invalid fields when they're edited again.
+	System::Void EditorForm::ValidateUndoRed(System::Object^ sender, System::EventArgs^ e) {
+		efUnsaved = true;
+		TextBox^ t = safe_cast<TextBox^>(sender);
+		if (t->BackColor == System::Drawing::Color::LightCoral) {
+			t->BackColor = System::Drawing::SystemColors::Window;
+		}
+	}
+
+	// Racename combo box is the odd one out and requires its own event. 
+	System::Void EditorForm::efRaceComboBox_SelectedIndexChanged(System::Object^ sender, System::EventArgs^ e) {
+		efUnsaved = true;
+		if (efRaceComboBox->BackColor == System::Drawing::Color::LightCoral) {
+			efRaceComboBox->BackColor = System::Drawing::SystemColors::Window;
+		}
 	}
 }

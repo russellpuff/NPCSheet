@@ -1,5 +1,4 @@
 #pragma once
-#include <cliext/vector>
 #include "NPC.h";
 
 namespace NPCSheet {
@@ -21,7 +20,13 @@ namespace NPCSheet {
 	// Class members I created.
 	private: bool cfUnsaved;
 	private: String^ caption = "NPCSheet";
-	private: cliext::vector<NPC^> NPCs;
+	private: System::Windows::Forms::DataGridViewTextBoxColumn^ cfDataGridNameColumn;
+	private: System::Windows::Forms::DataGridViewTextBoxColumn^ cfDataGridAlignColumn;
+	private: System::Windows::Forms::DataGridViewTextBoxColumn^ cfDataGridRaceColumn;
+
+
+
+	private: List<NPC^>^ NPCs;
 	// End of homemade class members.
 
 	public:
@@ -29,7 +34,8 @@ namespace NPCSheet {
 		{
 			InitializeComponent();
 			// Constructor code
-			cfUnsaved = false; // On empty form, unsaved is false to allow exit without interruption if no other actions are taken.
+			cfUnsaved = false; // On empty form, unsaved is false to allow exit without interruption if no other actions are taken
+			NPCs = gcnew List<NPC^>();
 		}
 
 	protected:
@@ -83,9 +89,12 @@ namespace NPCSheet {
 			this->cfBottomTableLayout = (gcnew System::Windows::Forms::TableLayoutPanel());
 			this->cfEditButton = (gcnew System::Windows::Forms::Button());
 			this->cfLoadButton = (gcnew System::Windows::Forms::Button());
+			this->cfDataGrid = (gcnew System::Windows::Forms::DataGridView());
+			this->cfDataGridNameColumn = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
+			this->cfDataGridAlignColumn = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
+			this->cfDataGridRaceColumn = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
 			this->cfNewButton = (gcnew System::Windows::Forms::Button());
 			this->cfSaveButton = (gcnew System::Windows::Forms::Button());
-			this->cfDataGrid = (gcnew System::Windows::Forms::DataGridView());
 			this->cfTopTableLayout = (gcnew System::Windows::Forms::TableLayoutPanel());
 			this->cfBottomTableLayout->SuspendLayout();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->cfDataGrid))->BeginInit();
@@ -125,9 +134,9 @@ namespace NPCSheet {
 				50)));
 			this->cfBottomTableLayout->Controls->Add(this->cfEditButton, 1, 1);
 			this->cfBottomTableLayout->Controls->Add(this->cfLoadButton, 1, 2);
+			this->cfBottomTableLayout->Controls->Add(this->cfDataGrid, 0, 0);
 			this->cfBottomTableLayout->Controls->Add(this->cfNewButton, 0, 1);
 			this->cfBottomTableLayout->Controls->Add(this->cfSaveButton, 0, 2);
-			this->cfBottomTableLayout->Controls->Add(this->cfDataGrid, 0, 0);
 			this->cfBottomTableLayout->Location = System::Drawing::Point(12, 57);
 			this->cfBottomTableLayout->Name = L"cfBottomTableLayout";
 			this->cfBottomTableLayout->RowCount = 3;
@@ -137,6 +146,10 @@ namespace NPCSheet {
 				43)));
 			this->cfBottomTableLayout->RowStyles->Add((gcnew System::Windows::Forms::RowStyle(System::Windows::Forms::SizeType::Absolute,
 				43)));
+			this->cfBottomTableLayout->RowStyles->Add((gcnew System::Windows::Forms::RowStyle(System::Windows::Forms::SizeType::Absolute,
+				20)));
+			this->cfBottomTableLayout->RowStyles->Add((gcnew System::Windows::Forms::RowStyle(System::Windows::Forms::SizeType::Absolute,
+				20)));
 			this->cfBottomTableLayout->Size = System::Drawing::Size(300, 473);
 			this->cfBottomTableLayout->TabIndex = 3;
 			// 
@@ -162,6 +175,54 @@ namespace NPCSheet {
 			this->cfLoadButton->UseVisualStyleBackColor = true;
 			this->cfLoadButton->Click += gcnew System::EventHandler(this, &CoreForm::cfLoadButton_Click);
 			// 
+			// cfDataGrid
+			// 
+			this->cfDataGrid->AllowUserToAddRows = false;
+			this->cfDataGrid->AllowUserToDeleteRows = false;
+			this->cfDataGrid->AllowUserToResizeColumns = false;
+			this->cfDataGrid->AllowUserToResizeRows = false;
+			this->cfDataGrid->ColumnHeadersHeightSizeMode = System::Windows::Forms::DataGridViewColumnHeadersHeightSizeMode::AutoSize;
+			this->cfDataGrid->Columns->AddRange(gcnew cli::array< System::Windows::Forms::DataGridViewColumn^  >(3) {
+				this->cfDataGridNameColumn,
+					this->cfDataGridAlignColumn, this->cfDataGridRaceColumn
+			});
+			this->cfBottomTableLayout->SetColumnSpan(this->cfDataGrid, 2);
+			this->cfDataGrid->Cursor = System::Windows::Forms::Cursors::Arrow;
+			this->cfDataGrid->EnableHeadersVisualStyles = false;
+			this->cfDataGrid->Location = System::Drawing::Point(3, 3);
+			this->cfDataGrid->MultiSelect = false;
+			this->cfDataGrid->Name = L"cfDataGrid";
+			this->cfDataGrid->ReadOnly = true;
+			this->cfDataGrid->RowHeadersVisible = false;
+			this->cfDataGrid->RowHeadersWidthSizeMode = System::Windows::Forms::DataGridViewRowHeadersWidthSizeMode::DisableResizing;
+			this->cfDataGrid->ScrollBars = System::Windows::Forms::ScrollBars::Vertical;
+			this->cfDataGrid->SelectionMode = System::Windows::Forms::DataGridViewSelectionMode::FullRowSelect;
+			this->cfDataGrid->ShowEditingIcon = false;
+			this->cfDataGrid->Size = System::Drawing::Size(294, 381);
+			this->cfDataGrid->TabIndex = 9;
+			this->cfDataGrid->TabStop = false;
+			// 
+			// cfDataGridNameColumn
+			// 
+			this->cfDataGridNameColumn->HeaderText = L"Name";
+			this->cfDataGridNameColumn->Name = L"cfDataGridNameColumn";
+			this->cfDataGridNameColumn->ReadOnly = true;
+			this->cfDataGridNameColumn->SortMode = System::Windows::Forms::DataGridViewColumnSortMode::NotSortable;
+			// 
+			// cfDataGridAlignColumn
+			// 
+			this->cfDataGridAlignColumn->HeaderText = L"Alignment";
+			this->cfDataGridAlignColumn->Name = L"cfDataGridAlignColumn";
+			this->cfDataGridAlignColumn->ReadOnly = true;
+			this->cfDataGridAlignColumn->SortMode = System::Windows::Forms::DataGridViewColumnSortMode::NotSortable;
+			// 
+			// cfDataGridRaceColumn
+			// 
+			this->cfDataGridRaceColumn->HeaderText = L"Race";
+			this->cfDataGridRaceColumn->Name = L"cfDataGridRaceColumn";
+			this->cfDataGridRaceColumn->ReadOnly = true;
+			this->cfDataGridRaceColumn->SortMode = System::Windows::Forms::DataGridViewColumnSortMode::NotSortable;
+			// 
 			// cfNewButton
 			// 
 			this->cfNewButton->Anchor = static_cast<System::Windows::Forms::AnchorStyles>(((System::Windows::Forms::AnchorStyles::Bottom | System::Windows::Forms::AnchorStyles::Left)
@@ -185,19 +246,6 @@ namespace NPCSheet {
 			this->cfSaveButton->Text = L"Save";
 			this->cfSaveButton->UseVisualStyleBackColor = true;
 			this->cfSaveButton->Click += gcnew System::EventHandler(this, &CoreForm::cfSaveButton_Click);
-			// 
-			// cfDataGrid
-			// 
-			this->cfDataGrid->AllowUserToAddRows = false;
-			this->cfDataGrid->AllowUserToDeleteRows = false;
-			this->cfDataGrid->ColumnHeadersHeightSizeMode = System::Windows::Forms::DataGridViewColumnHeadersHeightSizeMode::AutoSize;
-			this->cfBottomTableLayout->SetColumnSpan(this->cfDataGrid, 2);
-			this->cfDataGrid->Location = System::Drawing::Point(3, 3);
-			this->cfDataGrid->Name = L"cfDataGrid";
-			this->cfDataGrid->ReadOnly = true;
-			this->cfDataGrid->Size = System::Drawing::Size(294, 381);
-			this->cfDataGrid->TabIndex = 9;
-			this->cfDataGrid->TabStop = false;
 			// 
 			// cfTopTableLayout
 			// 
