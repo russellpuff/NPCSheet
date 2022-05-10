@@ -128,89 +128,87 @@ namespace NPCSheet {
 
 	private: System::Windows::Forms::Button^ efAddTraitButton;
 
-private: System::Windows::Forms::NumericUpDown^ efItemQtyNumUpDown;
-private: System::Windows::Forms::TableLayoutPanel^ efTraitsTableLayout;
-
-private: System::Windows::Forms::ListBox^ efTraitsListBox;
-private: System::Windows::Forms::Button^ efTraitViewButton;
-private: System::Windows::Forms::Button^ efTraitDeleteButton;
-private: System::Windows::Forms::Label^ efLineLabel4;
-private: System::Windows::Forms::Label^ efAppearanceLabel;
-private: System::Windows::Forms::TableLayoutPanel^ efTacticsTableLayout;
-
-
-
-private: System::Windows::Forms::Label^ efTacticsLabel;
-private: System::Windows::Forms::TextBox^ efTMorTextBox;
-
-
-private: System::Windows::Forms::TextBox^ efTComTextBox;
-
-private: System::Windows::Forms::Label^ efTMoraleLabel;
-
-private: System::Windows::Forms::Label^ efTSocialLabel;
-private: System::Windows::Forms::TextBox^ efTSocTextBox;
-
-
-private: System::Windows::Forms::Label^ efTCombatLabel;
-
-private: System::Windows::Forms::Label^ efGoalsMotivesLabel;
-private: System::Windows::Forms::Label^ efPersonalityLabel;
-private: System::Windows::Forms::TableLayoutPanel^ efIBFTableLayout;
-
-
-
-
-
-
-
-private: System::Windows::Forms::ListBox^ efFlawsListBox;
-
-private: System::Windows::Forms::ListBox^ efBondsListBox;
-
-private: System::Windows::Forms::Button^ efFDelButton;
-
-private: System::Windows::Forms::Button^ efFViewButton;
-
-private: System::Windows::Forms::Button^ efFAddButton;
-
-private: System::Windows::Forms::Button^ efBDelButton;
-
-
-private: System::Windows::Forms::Button^ efBViewButton;
-
-private: System::Windows::Forms::Button^ efBAddButton;
-
-private: System::Windows::Forms::Button^ efIDelButton;
-
-private: System::Windows::Forms::Button^ efIViewButton;
-
-private: System::Windows::Forms::TextBox^ efFlawsTextBox;
-
-private: System::Windows::Forms::TextBox^ efBondsTextBox;
-
-private: System::Windows::Forms::Label^ efIdealsLabel;
-private: System::Windows::Forms::Label^ efBondsLabel;
-private: System::Windows::Forms::Label^ efFlawsLabel;
-private: System::Windows::Forms::TextBox^ efIdealsTextBox;
-private: System::Windows::Forms::Button^ efIAddButton;
-private: System::Windows::Forms::ListBox^ efIdealsListBox;
-private: System::Windows::Forms::TableLayoutPanel^ efDescTableLayout;
-
-
-
-
-
-
-
-private: System::Windows::Forms::TextBox^ efGoalMotTextBox;
-
-private: System::Windows::Forms::TextBox^ efAppearTextBox;
-private: System::Windows::Forms::TextBox^ efPersoTextBox;
-private: System::Windows::Forms::Label^ efAddlStatsLabel;
-private: System::Windows::Forms::TextBox^ efAddlStatsTextBox;
-
-
+	private: System::Windows::Forms::NumericUpDown^ efItemQtyNumUpDown;
+	private: System::Windows::Forms::TableLayoutPanel^ efTraitsTableLayout;
+	
+	private: System::Windows::Forms::ListBox^ efTraitsListBox;
+	private: System::Windows::Forms::Button^ efTraitViewButton;
+	private: System::Windows::Forms::Button^ efTraitDeleteButton;
+	private: System::Windows::Forms::Label^ efLineLabel4;
+	private: System::Windows::Forms::Label^ efAppearanceLabel;
+	private: System::Windows::Forms::TableLayoutPanel^ efTacticsTableLayout;
+	
+	
+	
+	private: System::Windows::Forms::Label^ efTacticsLabel;
+	private: System::Windows::Forms::TextBox^ efTMorTextBox;
+	
+	
+	private: System::Windows::Forms::TextBox^ efTComTextBox;
+	
+	private: System::Windows::Forms::Label^ efTMoraleLabel;
+	
+	private: System::Windows::Forms::Label^ efTSocialLabel;
+	private: System::Windows::Forms::TextBox^ efTSocTextBox;
+	
+	
+	private: System::Windows::Forms::Label^ efTCombatLabel;
+	
+	private: System::Windows::Forms::Label^ efGoalsMotivesLabel;
+	private: System::Windows::Forms::Label^ efPersonalityLabel;
+	private: System::Windows::Forms::TableLayoutPanel^ efIBFTableLayout;
+	
+	
+	
+	
+	
+	
+	
+	private: System::Windows::Forms::ListBox^ efFlawsListBox;
+	
+	private: System::Windows::Forms::ListBox^ efBondsListBox;
+	
+	private: System::Windows::Forms::Button^ efFDelButton;
+	
+	private: System::Windows::Forms::Button^ efFViewButton;
+	
+	private: System::Windows::Forms::Button^ efFAddButton;
+	
+	private: System::Windows::Forms::Button^ efBDelButton;
+	
+	
+	private: System::Windows::Forms::Button^ efBViewButton;
+	
+	private: System::Windows::Forms::Button^ efBAddButton;
+	
+	private: System::Windows::Forms::Button^ efIDelButton;
+	
+	private: System::Windows::Forms::Button^ efIViewButton;
+	
+	private: System::Windows::Forms::TextBox^ efFlawsTextBox;
+	
+	private: System::Windows::Forms::TextBox^ efBondsTextBox;
+	
+	private: System::Windows::Forms::Label^ efIdealsLabel;
+	private: System::Windows::Forms::Label^ efBondsLabel;
+	private: System::Windows::Forms::Label^ efFlawsLabel;
+	private: System::Windows::Forms::TextBox^ efIdealsTextBox;
+	private: System::Windows::Forms::Button^ efIAddButton;
+	private: System::Windows::Forms::ListBox^ efIdealsListBox;
+	private: System::Windows::Forms::TableLayoutPanel^ efDescTableLayout;
+	
+	
+	
+	
+	
+	
+	
+	private: System::Windows::Forms::TextBox^ efGoalMotTextBox;
+	
+	private: System::Windows::Forms::TextBox^ efAppearTextBox;
+	private: System::Windows::Forms::TextBox^ efPersoTextBox;
+	private: System::Windows::Forms::Label^ efAddlStatsLabel;
+	private: System::Windows::Forms::TextBox^ efAddlStatsTextBox;
 
 
 
@@ -223,11 +221,13 @@ private: System::Windows::Forms::TextBox^ efAddlStatsTextBox;
 
 
 
+
+	private: int wizardStep; // Stage tracker for wizard.
 	private: NPC^ n; // Temporary NPC object that will be returned if all is good. 
-private: System::Windows::Forms::Label^ efVertLabel2;
-private: System::Windows::Forms::Label^ label1;
+	private: System::Windows::Forms::Label^ efVertLabel2;
+	private: System::Windows::Forms::Label^ label1;
 
-
+	private: array<bool>^ stepSeen;
 	private: array<String^>^ tradAtts;
 	public: NPC^ retNPC(); // Function that returns the NPC being edited. This will only be called when DialogueResult is OK.
 	private: System::Windows::Forms::TableLayoutPanel^ efCoreInfoTableLayout;
@@ -283,15 +283,16 @@ private: System::Windows::Forms::Label^ label1;
 
 	public:
 		// Default constructor uses a wizard to create a new form.
-		EditorForm(void) {
+		EditorForm(bool w) {
 			InitializeComponent();
 			n = gcnew NPC();
 			tradAtts = gcnew array<String^>{
 				"Strength", "Dexterity", "Constitution", "Intelligence", "Wisdom", "Charisma"};
+			stepSeen = gcnew array<bool>(11);
+			for each (bool b in stepSeen) { b = false; }
 			efUnsaved = false;
 			//efSaveButton->Enabled = false;
 			efNextButton->Visible = true;
-			efNextButton->Enabled = false;
 			efStatsCheckBox->Checked = true;
 			efRaceComboBox->SelectedIndex = 0;
 			efStaminaCheckBox->Checked = false;
@@ -304,6 +305,12 @@ private: System::Windows::Forms::Label^ label1;
 				efStat1NumUpDown, efStat2NumUpDown, efStat3NumUpDown, efStat4NumUpDown, efStat5NumUpDown, efStat6NumUpDown
 			};
 			for (int i = 0; i <= 5; ++i) { statNumUpDown[i]->Value = 10; }
+			// w value indicates whether the wizard is enabled or not.
+			if (w) { wizardStep = 0; }
+			else { 
+				wizardStep = -1;
+				efNextButton->Visible = false;
+			}
 		}
 
 		// Constructor for editing an existing NPC.
@@ -316,6 +323,8 @@ private: System::Windows::Forms::Label^ label1;
 			efUnsaved = false;
 			efSaveButton->Enabled = true;
 			efNextButton->Visible = false;
+			efRandomStatsButton->Visible = false;
+			wizardStep = -1;
 		}
 
 	protected:
@@ -482,6 +491,8 @@ private: System::Windows::Forms::Label^ label1;
 			this->efItemTextBox = (gcnew System::Windows::Forms::TextBox());
 			this->efItemsListBox = (gcnew System::Windows::Forms::ListBox());
 			this->efTabPage5 = (gcnew System::Windows::Forms::TabPage());
+			this->label1 = (gcnew System::Windows::Forms::Label());
+			this->efVertLabel2 = (gcnew System::Windows::Forms::Label());
 			this->efDescTableLayout = (gcnew System::Windows::Forms::TableLayoutPanel());
 			this->efGoalMotTextBox = (gcnew System::Windows::Forms::TextBox());
 			this->efGoalsMotivesLabel = (gcnew System::Windows::Forms::Label());
@@ -511,15 +522,13 @@ private: System::Windows::Forms::Label^ label1;
 			this->efTacticsTableLayout = (gcnew System::Windows::Forms::TableLayoutPanel());
 			this->efTacticsLabel = (gcnew System::Windows::Forms::Label());
 			this->efTMorTextBox = (gcnew System::Windows::Forms::TextBox());
-			this->efTComTextBox = (gcnew System::Windows::Forms::TextBox());
 			this->efTMoraleLabel = (gcnew System::Windows::Forms::Label());
 			this->efTSocialLabel = (gcnew System::Windows::Forms::Label());
 			this->efTSocTextBox = (gcnew System::Windows::Forms::TextBox());
 			this->efTCombatLabel = (gcnew System::Windows::Forms::Label());
+			this->efTComTextBox = (gcnew System::Windows::Forms::TextBox());
 			this->efSaveButton = (gcnew System::Windows::Forms::Button());
 			this->efCancelButton = (gcnew System::Windows::Forms::Button());
-			this->efVertLabel2 = (gcnew System::Windows::Forms::Label());
-			this->label1 = (gcnew System::Windows::Forms::Label());
 			this->efTabControl->SuspendLayout();
 			this->efTabPage1->SuspendLayout();
 			this->efCoreInfoTableLayout->SuspendLayout();
@@ -578,6 +587,7 @@ private: System::Windows::Forms::Label^ label1;
 			this->efTabControl->SelectedIndex = 0;
 			this->efTabControl->Size = System::Drawing::Size(491, 572);
 			this->efTabControl->TabIndex = 5;
+			this->efTabControl->Selecting += gcnew System::Windows::Forms::TabControlCancelEventHandler(this, &EditorForm::efTabControl_Selecting);
 			// 
 			// efTabPage1
 			// 
@@ -2137,6 +2147,22 @@ private: System::Windows::Forms::Label^ label1;
 			this->efTabPage5->Text = L"Personality";
 			this->efTabPage5->UseVisualStyleBackColor = true;
 			// 
+			// label1
+			// 
+			this->label1->BorderStyle = System::Windows::Forms::BorderStyle::Fixed3D;
+			this->label1->Location = System::Drawing::Point(2, 554);
+			this->label1->Name = L"label1";
+			this->label1->Size = System::Drawing::Size(465, 2);
+			this->label1->TabIndex = 41;
+			// 
+			// efVertLabel2
+			// 
+			this->efVertLabel2->BackColor = System::Drawing::Color::Silver;
+			this->efVertLabel2->Location = System::Drawing::Point(221, 3);
+			this->efVertLabel2->Name = L"efVertLabel2";
+			this->efVertLabel2->Size = System::Drawing::Size(1, 551);
+			this->efVertLabel2->TabIndex = 40;
+			// 
 			// efDescTableLayout
 			// 
 			this->efDescTableLayout->ColumnCount = 1;
@@ -2548,17 +2574,6 @@ private: System::Windows::Forms::Label^ label1;
 			this->efTMorTextBox->TabIndex = 2;
 			this->efTMorTextBox->TextChanged += gcnew System::EventHandler(this, &EditorForm::ValidateUndoRed);
 			// 
-			// efTComTextBox
-			// 
-			this->efTComTextBox->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
-				static_cast<System::Byte>(0)));
-			this->efTComTextBox->Location = System::Drawing::Point(3, 228);
-			this->efTComTextBox->Multiline = true;
-			this->efTComTextBox->Name = L"efTComTextBox";
-			this->efTComTextBox->Size = System::Drawing::Size(236, 144);
-			this->efTComTextBox->TabIndex = 1;
-			this->efTComTextBox->TextChanged += gcnew System::EventHandler(this, &EditorForm::ValidateUndoRed);
-			// 
 			// efTMoraleLabel
 			// 
 			this->efTMoraleLabel->Anchor = static_cast<System::Windows::Forms::AnchorStyles>((System::Windows::Forms::AnchorStyles::Bottom | System::Windows::Forms::AnchorStyles::Right));
@@ -2606,6 +2621,17 @@ private: System::Windows::Forms::Label^ label1;
 			this->efTCombatLabel->TabIndex = 27;
 			this->efTCombatLabel->Text = L"Combat";
 			// 
+			// efTComTextBox
+			// 
+			this->efTComTextBox->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->efTComTextBox->Location = System::Drawing::Point(3, 228);
+			this->efTComTextBox->Multiline = true;
+			this->efTComTextBox->Name = L"efTComTextBox";
+			this->efTComTextBox->Size = System::Drawing::Size(236, 144);
+			this->efTComTextBox->TabIndex = 1;
+			this->efTComTextBox->TextChanged += gcnew System::EventHandler(this, &EditorForm::ValidateUndoRed);
+			// 
 			// efSaveButton
 			// 
 			this->efSaveButton->Anchor = static_cast<System::Windows::Forms::AnchorStyles>(((System::Windows::Forms::AnchorStyles::Bottom | System::Windows::Forms::AnchorStyles::Left)
@@ -2630,22 +2656,6 @@ private: System::Windows::Forms::Label^ label1;
 			this->efCancelButton->Text = L"Cancel";
 			this->efCancelButton->UseVisualStyleBackColor = true;
 			this->efCancelButton->Click += gcnew System::EventHandler(this, &EditorForm::efCancelButton_Click);
-			// 
-			// efVertLabel2
-			// 
-			this->efVertLabel2->BackColor = System::Drawing::Color::Silver;
-			this->efVertLabel2->Location = System::Drawing::Point(221, 3);
-			this->efVertLabel2->Name = L"efVertLabel2";
-			this->efVertLabel2->Size = System::Drawing::Size(1, 551);
-			this->efVertLabel2->TabIndex = 40;
-			// 
-			// label1
-			// 
-			this->label1->BorderStyle = System::Windows::Forms::BorderStyle::Fixed3D;
-			this->label1->Location = System::Drawing::Point(2, 554);
-			this->label1->Name = L"label1";
-			this->label1->Size = System::Drawing::Size(465, 2);
-			this->label1->TabIndex = 41;
 			// 
 			// EditorForm
 			// 
@@ -2754,5 +2764,6 @@ private: System::Windows::Forms::Label^ label1;
 	private: System::Void ValidateUndoRed(System::Object^ sender, System::EventArgs^ e);
 	private: System::Void efRaceComboBox_SelectedIndexChanged(System::Object^ sender, System::EventArgs^ e);
 	private: System::Void LoadMyNPC();
+	private: System::Void efTabControl_Selecting(System::Object^ sender, System::Windows::Forms::TabControlCancelEventArgs^ e);
 };
 }

@@ -129,7 +129,6 @@
   <ItemGroup>
     <ClCompile Include="NPCSheet.cpp" />
     <ClCompile Include="FormsDefs.cpp" />
-    <ClCompile Include="WeaponForm.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CoreForm.h">

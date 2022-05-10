@@ -41,15 +41,18 @@ namespace NPCSheet {
 
 	// Clicking the New button on the core form.
 	System::Void CoreForm::cfNewButton_Click(System::Object^ sender, System::EventArgs^ e) {
-		String^ message = "The wizard will guide you through creating the NPC character sheet step-by-step.\n";
-		message += "Are you ready to begin?";
-		auto result = MessageBox::Show(message, caption, MessageBoxButtons::YesNo, MessageBoxIcon::Information);
-		if (result == System::Windows::Forms::DialogResult::Yes) {
-			EditorForm e;
+		String^ message = "Would you like the wizard to guide you through creating the NPC character sheet step-by-step?\n";
+		auto result = MessageBox::Show(message, caption, MessageBoxButtons::YesNoCancel, MessageBoxIcon::Information);
+		bool w;
+		if (result == System::Windows::Forms::DialogResult::Yes) { w = true; }
+		else if (result == System::Windows::Forms::DialogResult::No) { w = false; }
+		if (result != System::Windows::Forms::DialogResult::Cancel) {
+			EditorForm e(w);
 			this->Hide();
 			e.ShowDialog();
 			this->Show();
 			if (e.DialogResult == System::Windows::Forms::DialogResult::OK) {
+				cfUnsaved = true;
 				NPCs->Add(e.retNPC());
 				int idx = NPCs->Count - 1;
 				this->cfDataGrid->Rows->Add(NPCs[idx]->name, NPCs[idx]->alignment, NPCs[idx]->race);
@@ -67,6 +70,7 @@ namespace NPCSheet {
 			e.ShowDialog();
 			this->Show();
 			if (e.DialogResult == System::Windows::Forms::DialogResult::OK) {
+				cfUnsaved = true;
 				NPCs[idx] = e.retNPC();
 				int idx = NPCs->Count - 1;
 				cfDataGrid->Rows[idx]->Cells["cfDataGridNameColumn"]->Value = NPCs[idx]->name;
@@ -104,6 +108,7 @@ namespace NPCSheet {
 			if (ofd->ShowDialog() == System::Windows::Forms::DialogResult::OK) {
 				System::IO::FileStream^ file = System::IO::File::Open(ofd->FileName, System::IO::FileMode::Open);
 				NPCs = (List<NPC^>^) cereal->Deserialize(file);
+				for each (NPC ^ npc in NPCs) { cfDataGrid->Rows->Add(npc->name, npc->alignment, npc->race); }
 				cfDataGrid->Refresh();
 			}
 		}
@@ -125,9 +130,9 @@ namespace NPCSheet {
 
 	// Event that triggers when the editor form loads.
 	System::Void EditorForm::EditorForm_Load(System::Object^ sender, System::EventArgs^ e) {
-		//efTabControl_SelectedIndexChanged(NULL, EventArgs::Empty);
 		DisplaySpellsInListBox();
 		rng.seed(seed_val); // initialize rng
+		if (wizardStep != -1) { efNextButton_Click(NULL, EventArgs::Empty); } // Triggers first step of the wizard. 
 	}
 
 	// Event that triggers when the editor form attempts to close.
@@ -659,7 +664,376 @@ namespace NPCSheet {
 
 	// When the next button is clicked on the editor form.
 	System::Void EditorForm::efNextButton_Click(System::Object^ sender, System::EventArgs^ e) {
+		String^ cap = "Wizard", ^msg = "";
+		String^ missing = "Mising required fields.\nThe required fields in this step are:";
+		MessageBoxButtons bt = MessageBoxButtons::OK;
+		switch (wizardStep) {
+		case 0:
+			if (!stepSeen[0]) {
+				// Lock all controls so the user can't mess with anything until the wizard allows.
+				for each (TabPage ^ tab in efTabControl->TabPages) { tab->Enabled = false; }
+				efTabControl->TabPages[0]->Enabled = true;
+				efSaveButton->Enabled = false;
 
+				efLanguagesTextBox->Enabled = false;
+				efSensesTextBox->Enabled = false;
+				efAddlStatsTextBox->Enabled = false;
+
+				efHPNumUpDown->Enabled = false;
+				efStaminaCheckBox->Enabled = false;
+				efSPNumUpDown->Enabled = false;
+				efInitNumUpDown->Enabled = false;
+
+				efDef1TextBox->Enabled = false;
+				efDef2TextBox->Enabled = false;
+				efDef3TextBox->Enabled = false;
+				efDef1NumUpDown->Enabled = false;
+				efDef2NumUpDown->Enabled = false;
+				efDef3NumUpDown->Enabled = false;
+				efDef2UseCheckBox->Enabled = false;
+				efDef3UseCheckBox->Enabled = false;
+
+				efSavesTextBox->Enabled = false;
+				efSavesNumUpDown->Enabled = false;
+				efSavesAddButton->Enabled = false;
+				efSavesDeleteButton->Enabled = false;
+				efSkillsTextBox->Enabled = false;
+				efSkillsNumUpDown->Enabled = false;
+				efSkillsAddButton->Enabled = false;
+				efSkillsDeleteButton->Enabled = false;
+
+				efTSocTextBox->Enabled = false;
+				efTComTextBox->Enabled = false;
+				efTMorTextBox->Enabled = false;
+
+				efIdealsTextBox->Enabled = false;
+				efBondsTextBox->Enabled = false;
+				efFlawsTextBox->Enabled = false;
+				efIAddButton->Enabled = false;
+				efIViewButton->Enabled = false;
+				efIDelButton->Enabled = false;
+				efBAddButton->Enabled = false;
+				efBViewButton->Enabled = false;
+				efBDelButton->Enabled = false;
+				efFAddButton->Enabled = false;
+				efFViewButton->Enabled = false;
+				efFDelButton->Enabled = false;
+				// End initial control lock.
+				msg += "The wizard will guide you through the NPC creation process.";
+				msg += "\nYou can find a copy of everything the wizard tells you in the external documentation.";
+				msg += "\n\nBegin by deciding the NPC's name, race, alignment, and type.";
+				msg += "\nIf \"race\" is known by a different term not listed, you can manually type it.";
+				msg += "\nAlignment is optional as not all systems use it.";
+				msg += "\nType has two boxes, the left box is the mandatory creature type, such as Humanoid or Dragon.";
+				msg += "\nThe right box is an optional tag. You see tags in the parenthesis in types such as Humanoid (human). ";
+				msg += "Parenthesis are not required in this context.";
+				msg += "\n\nWhen you are ready to proceed to the next step, click the Next button.";
+				MessageBox::Show(msg, cap, bt);
+				stepSeen[0] = true;
+			}
+			else {
+				bool v1 = (!String::IsNullOrEmpty(efNameTextBox->Text));
+				bool v2 = (!String::IsNullOrEmpty(efRaceComboBox->Text));
+				bool v3 = (!String::IsNullOrEmpty(efRaceTextBox->Text));
+				bool v4 = (!String::IsNullOrEmpty(efTypeTextBox->Text));
+				if (v1 && v2 && v3 && v4) {
+					++wizardStep;
+					efNextButton_Click(NULL, EventArgs::Empty);
+				}
+				else {
+					msg = missing;
+					msg += "\nName, Race, Race Alias, and Type.";
+					MessageBox::Show(msg, cap, bt);
+				}
+			}
+			break;
+		case 1:
+			if (!stepSeen[1]) {
+				efLanguagesTextBox->Enabled = true;
+				efSensesTextBox->Enabled = true;
+				efAddlStatsTextBox->Enabled = true;
+
+				msg += "The next step is to fill out the NPC's Languages, Senses, and Statistics.";
+				msg += "\nLanguages and Senses can be added by putting each on a new line. You must have at least one of each.";
+				msg += "\nStatistics covers any feature of the NPC not covered in future segments. ";
+				msg += "This segment is optional, and you may want to come back to it later.";
+				MessageBox::Show(msg, cap, bt);
+				stepSeen[1] = true;
+			}
+			else {
+				bool v1 = (!String::IsNullOrEmpty(efLanguagesTextBox->Text));
+				bool v2 = (!String::IsNullOrEmpty(efSensesLabel->Text));
+				if (v1 && v2) {
+					++wizardStep;
+					efNextButton_Click(NULL, EventArgs::Empty);
+				}
+				else {
+					msg = missing;
+					msg += "\nLanguages and Senses.";
+					MessageBox::Show(msg, cap, bt);
+				}
+			}
+			break;
+		case 2:
+			if (!stepSeen[2]) {
+				efTabControl->TabPages[1]->Enabled = true;
+				efTabControl->SelectedIndex = 1;
+
+				msg += "The next step is to establish the NPC's ability scores.";
+				msg += "\nThe traditional scores have been implemented by default, ";
+				msg += "but you can use custom scores by unchecking the \"Use Traditional?\" checkbox.";
+				msg += "\nAbility scores can be generated randomly using the 4d6d1 method, click the \"Roll Random?\" button to do so.";
+				MessageBox::Show(msg, cap, bt);
+				stepSeen[2] = true;
+			}
+			else {
+				bool v1 = (!String::IsNullOrEmpty(efStat1TextBox->Text));
+				bool v2 = (!String::IsNullOrEmpty(efStat2TextBox->Text));
+				bool v3 = (!String::IsNullOrEmpty(efStat3TextBox->Text));
+				bool v4 = (!String::IsNullOrEmpty(efStat4TextBox->Text));
+				bool v5 = (!String::IsNullOrEmpty(efStat5TextBox->Text));
+				bool v6 = (!String::IsNullOrEmpty(efStat6TextBox->Text));
+
+				if (v1 && v2 && v3 && v4 && v5 && v6) {
+					++wizardStep;
+					efNextButton_Click(NULL, EventArgs::Empty);
+				}
+				else {
+					msg = missing;
+					msg += "\nAll six ability score fields must be filled out!";
+					MessageBox::Show(msg, cap, bt);
+				}
+			}
+			break;
+		case 3:
+			if (!stepSeen[3]) {
+				efHPNumUpDown->Enabled = true;
+				efStaminaCheckBox->Enabled = true;
+				efInitNumUpDown->Enabled = true;
+
+				msg += "The next step is to determine your NPC's hit points, stamina points (if applicable) and initiative bonus.";
+				msg += "\nIf your system uses stamina points, you can enable them with the associated checkbox.";
+				msg += "\nMake sure you disable stamina if you don't use it, otherwise your NPC will have at least 1 point.";
+				MessageBox::Show(msg, cap, bt);
+				stepSeen[3] = true;
+			}
+			else {
+				// Nothing to verify here.
+				++wizardStep;
+				efNextButton_Click(NULL, EventArgs::Empty);
+			}
+			break;
+		case 4:
+			if (!stepSeen[4]) {
+				efDef1TextBox->Enabled = true;
+				efDef1NumUpDown->Enabled = true;
+				efDef2UseCheckBox->Enabled = true;
+				efDef3UseCheckBox->Enabled = true;
+
+				msg += "The next step is to set up your NPC's defenses.";
+				msg += "\nThe default defense type AC has already been set, but you can change this.";
+				msg += "\nYou can add up to two additional defenses using the checkboxes.";
+				MessageBox::Show(msg, cap, bt);
+				stepSeen[4] = true;
+			}
+			else {
+				bool v1 = (!String::IsNullOrEmpty(efDef1TextBox->Text));
+				bool v2 = true, v3 = true;
+				if (efDef2UseCheckBox->Checked) { v2 = (!String::IsNullOrEmpty(efDef2TextBox->Text)); }
+				if (efDef3UseCheckBox->Checked) { v3 = (!String::IsNullOrEmpty(efDef3TextBox->Text)); }
+				
+				if (v1 && v2 && v3) {
+					++wizardStep;
+					efNextButton_Click(NULL, EventArgs::Empty);
+				}
+				else {
+					msg = missing;
+					msg += "\nYou must fill out defense names if they're being used.";
+					MessageBox::Show(msg, cap, bt);
+				}
+			}
+			break;
+		case 5:
+			if (!stepSeen[5]) {
+				efSavesTextBox->Enabled = true;
+				efSavesNumUpDown->Enabled = true;
+				efSavesAddButton->Enabled = true;;
+				efSavesDeleteButton->Enabled = true;
+				efSkillsTextBox->Enabled = true;
+				efSkillsNumUpDown->Enabled = true;
+				efSkillsAddButton->Enabled = true;
+				efSkillsDeleteButton->Enabled = true;
+
+				msg += "The next step is to establish your NPC's saves and skills.";
+				msg += "\nType the name of the Save/Skill in the appropriate box, then set their numerical bonus/detriment.";
+				msg += "\nA save or skill can be deleted by selecting them in the list, and pressing Delete.";
+				msg += "\nThese segments are optional, if your NPC does not have any save or skills mods.";
+				MessageBox::Show(msg, cap, bt);
+				stepSeen[5] = true;
+			}
+			else {
+				// Nothing to verify here.
+				++wizardStep;
+				efNextButton_Click(NULL, EventArgs::Empty);
+			}
+			break;
+		case 6:
+			if (!stepSeen[6]) {
+				efTabControl->TabPages[2]->Enabled = true;
+				efTabControl->SelectedIndex = 2;
+
+				msg += "The next step is to establish your NPC's Actions, Weapons, and Spells.";
+				msg += "\nYour NPC only requires one entry in any of the three.";
+				msg += "\n\nThe Actions section allows you to define an Action name in the top box, ";
+				msg += "and the Action's description in the box below it. Click the Add button to add it to the list.";
+				msg += "\nActions in the list can be viewed or deleted by selected them and clicking the appropriate button.";
+				msg += "\n\nThe weapons section has its own dedicated weapon creator. Click the Create Weapon button to launch it.";
+				msg += "\nThe weapon creator allows you to define a weapon's Name, Ability Mod, bonus to atk and dmg, and type.";
+				msg += "\nA Weapon can do up to 2 types of damage, but at least one is required. The Weapon Creator will not let you ";
+				msg += "save unless all required fields are filled out.";
+				msg += "\n\nSpells can be added by typing the spell name into the appropriate text box, and then incrementing the ";
+				msg += "counter to match the spell's level, levels 0-9 are supported.";
+				msg += "Spells added are displayed sorted by their level, to delete the last spell in a row, select a row and click the Remove Last button";
+				
+				MessageBox::Show(msg, cap, bt);
+				stepSeen[6] = true;
+			}
+			else {
+				bool v1 = (efActionListBox->Items->Count > 0);
+				bool v2 = (efWeaponsListBox->Items->Count > 0);
+				bool v3 = false;
+				for (int i = 0; i <= 9; ++i) {
+					if (n->spells[i]->Count > 0) {
+						v3 = true;
+						break;
+					}
+				}
+
+				if (v1 || v2 || v3) {
+					++wizardStep;
+					efNextButton_Click(NULL, EventArgs::Empty);
+				}
+				else {
+					msg = missing;
+					msg += "\nYou must have at least one Action, Weapon, or Spell!";
+					MessageBox::Show(msg, cap, bt);
+				}
+			}
+			break;
+		case 7:
+			if (!stepSeen[7]) {
+				efTabControl->TabPages[3]->Enabled = true;
+				efTabControl->SelectedIndex = 3;
+
+				msg += "The next step is to define your NPC's traits and items.";
+				msg += "\nTrait names are in the topmost textbox, and their descriptions go in the box below.";
+				msg += "\nTraits can be viewed by selecting them and clicking the View button.";
+				msg += "\n\nItems can be added by typing in the item's name in the textbox, and incrementing its counter for quantity.";
+				msg += "\n\nBoth of these are optional if your NPC doesn't have anything of note.";
+				MessageBox::Show(msg, cap, bt);
+				stepSeen[7] = true;
+			}
+			else {
+				// Nothing to verify here.
+				++wizardStep;
+				efNextButton_Click(NULL, EventArgs::Empty);
+			}
+			break;
+		case 8:
+			if (!stepSeen[8]) {
+				efTabControl->TabPages[4]->Enabled = true;
+				efTabControl->SelectedIndex = 4;
+
+				msg += "The next step is to establish your NPC's personality and description.";
+				msg += "\nBegin by describing their Appearance, Personality, and their current Goals/Motives.";
+				MessageBox::Show(msg, cap, bt);
+				stepSeen[8] = true;
+			}
+			else {
+				bool v1 = !String::IsNullOrEmpty(efAppearTextBox->Text);
+				bool v2 = !String::IsNullOrEmpty(efPersoTextBox->Text);
+				bool v3 = !String::IsNullOrEmpty(efGoalMotTextBox->Text);
+
+				if (v1 && v2 && v3) {
+					++wizardStep;
+					efNextButton_Click(NULL, EventArgs::Empty);
+				}
+				else {
+					msg = missing;
+					msg += "\nAppearance, Personality, and Goals/Motives.";
+					MessageBox::Show(msg, cap, bt);
+				}
+			}
+			break;
+		case 9:
+			if (!stepSeen[9]) {
+				efTSocTextBox->Enabled = true;
+				efTComTextBox->Enabled = true;
+				efTMorTextBox->Enabled = true;
+
+				msg += "Next, define your NPC's tactics when it comes to Social encounters, Combat encounters, and their morale.";
+				MessageBox::Show(msg, cap, bt);
+				stepSeen[9] = true;
+			}
+			else {
+				bool v1 = !String::IsNullOrEmpty((efTSocTextBox->Text));
+				bool v2 = !String::IsNullOrEmpty((efTComTextBox->Text));
+				bool v3 = !String::IsNullOrEmpty((efTMorTextBox->Text));
+
+				if (v1 && v2 && v3) {
+					++wizardStep;
+					efNextButton_Click(NULL, EventArgs::Empty);
+				}
+				else {
+					msg = missing;
+					msg += "\nTactics (Social), Tactics (Combat), and Tactics (Morale)";
+					MessageBox::Show(msg, cap, bt);
+				}
+			}
+			break;
+		case 10:
+			if (!stepSeen[10]) {
+				efIdealsTextBox->Enabled = true;
+				efBondsTextBox->Enabled = true;
+				efFlawsTextBox->Enabled = true;
+				efIAddButton->Enabled = true;
+				efIViewButton->Enabled = true;
+				efIDelButton->Enabled = true;
+				efBAddButton->Enabled = true;
+				efBViewButton->Enabled = true;
+				efBDelButton->Enabled = true;
+				efFAddButton->Enabled = true;
+				efFViewButton->Enabled = true;
+				efFDelButton->Enabled = true;
+
+				msg += "The final step is to establish your NPC's Ideals, Bonds, and Flaws.";
+				msg += "\nEach of the three has an appropriate text box for input, and buttons for adding, viewing, and deleting.";
+				msg += "\nIf you cannot see that segment, try scrolling down.";
+				MessageBox::Show(msg, cap, bt);
+				stepSeen[10] = true;
+			}
+			else {
+				bool v1 = (efIdealsListBox->Items->Count > 0);
+				bool v2 = (efBondsListBox->Items->Count > 0);
+				bool v3 = (efFlawsListBox->Items->Count > 0);
+
+				if (v1 && v2 && v3) {
+					msg = "Congratulations! You've successfully completed the NPC!";
+					msg += "\nThe entire form is now open to you to make tweaks. ";
+					msg += "When you're finished, click the save button to save your NPC.";
+					msg += "\n\nRefer to the external documentation for information on what else you can do. Click the ? button in the home screen.";
+					MessageBox::Show(msg, cap, bt);
+					efSaveButton->Enabled = true;
+					efNextButton->Visible = false;
+					wizardStep = -1;
+				}
+				else {
+					msg = missing;
+					msg += "\nYou must have at least one Ideal, Bond, and Flaw!";
+					MessageBox::Show(msg, cap, bt);
+				}
+			}
+		}
 	}
 
 	NPC^ EditorForm::retNPC() {
@@ -894,4 +1268,8 @@ namespace NPCSheet {
 		DataGridRowUpdate();
 	}
 	// Annoyances stop here.
+
+	System::Void EditorForm::efTabControl_Selecting(System::Object^ sender, System::Windows::Forms::TabControlCancelEventArgs^ e) {
+		if (!e->TabPage->Enabled) { e->Cancel = true; }
+	}
 }
